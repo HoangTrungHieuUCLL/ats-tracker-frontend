@@ -1,6 +1,4 @@
 # Multi-stage build: Node build stage -> static server stage.
-# Not yet buildable — the Vite app is scaffolded in a later build phase.
-# Kept here now so the repo matches the two-repo scaffold from day one.
 
 FROM node:20-slim AS build
 WORKDIR /app
