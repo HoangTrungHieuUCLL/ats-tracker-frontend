@@ -24,7 +24,7 @@ function KpiCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-4">
       <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-xl font-semibold text-slate-900">{value}</p>
+      <p className="text-xl font-semibold text-black">{value}</p>
     </div>
   )
 }
@@ -113,7 +113,7 @@ export default function DashboardPage() {
             onClick={() => setCategory(tab.value)}
             className={`px-3 py-1.5 text-xs rounded-full border ${
               category === tab.value
-                ? "bg-slate-900 text-white border-slate-900"
+                ? "bg-black text-white border-black"
                 : "border-slate-300 text-slate-600"
             }`}
           >
@@ -134,7 +134,7 @@ export default function DashboardPage() {
           )}
 
           <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-            <h2 className="text-sm font-semibold text-slate-900 mb-3">
+            <h2 className="text-sm font-semibold text-black mb-3">
               Top keywords by share of jobs
             </h2>
             {keywordsQuery.data.items.length > 0 ? (
@@ -208,7 +208,7 @@ function RenamePrompt({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5">
-        <h2 className="text-base font-semibold text-slate-900 mb-3">Rename keyword</h2>
+        <h2 className="text-base font-semibold text-black mb-3">Rename keyword</h2>
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -222,7 +222,7 @@ function RenamePrompt({
             type="button"
             disabled={submitting || value.trim().length === 0}
             onClick={() => onConfirm(value.trim())}
-            className="px-3 py-1.5 text-sm rounded-md bg-slate-900 text-white disabled:opacity-50"
+            className="px-3 py-1.5 text-sm rounded-md bg-black text-white disabled:opacity-50"
           >
             Save
           </button>
@@ -247,7 +247,7 @@ function CategoryPrompt({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5">
-        <h2 className="text-base font-semibold text-slate-900 mb-3">Change category</h2>
+        <h2 className="text-base font-semibold text-black mb-3">Change category</h2>
         <select
           value={value}
           onChange={(e) => setValue(e.target.value as KeywordCategory)}
@@ -267,7 +267,7 @@ function CategoryPrompt({
             type="button"
             disabled={submitting}
             onClick={() => onConfirm(value)}
-            className="px-3 py-1.5 text-sm rounded-md bg-slate-900 text-white disabled:opacity-50"
+            className="px-3 py-1.5 text-sm rounded-md bg-black text-white disabled:opacity-50"
           >
             Save
           </button>

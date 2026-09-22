@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
-import { login as apiLogin } from "../api/auth"
+import { login as apiLogin, register as apiRegister } from "../api/auth"
 import { getToken, setOnUnauthorized, setToken } from "../api/client"
 import { queryClient } from "../api/queryClient"
 
 interface AuthContextValue {
   isAuthenticated: boolean
-  login: (password: string) => Promise<void>
+  login: (username: string, password: string) => Promise<void>
+  register: (username: string, password: string) => Promise<void>
   logout: () => void
 }
 
@@ -21,8 +22,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthContextValue>(
     () => ({
       isAuthenticated,
-      login: async (password: string) => {
-        const token = await apiLogin(password)
+      login: async (username: string, password: string) => {
+        const token = await apiLogin(username, password)
+        setToken(token)
+        setIsAuthenticated(true)
+      },
+      register: async (username: string, password: string) => {
+        const token = await apiRegister(username, password)
         setToken(token)
         setIsAuthenticated(true)
       },

@@ -20,7 +20,7 @@ export default function MergeKeywordModal({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5">
-        <h2 className="text-base font-semibold text-slate-900 mb-1">
+        <h2 className="text-base font-semibold text-black mb-1">
           Merge "{source.canonical_name}" into…
         </h2>
         <p className="text-xs text-slate-500 mb-3">
@@ -57,7 +57,7 @@ export default function MergeKeywordModal({
                 onConfirm(targetId)
               }
             }}
-            className="px-3 py-1.5 text-sm rounded-md bg-slate-900 text-white disabled:opacity-50"
+            className="px-3 py-1.5 text-sm rounded-md bg-black text-white disabled:opacity-50"
           >
             {submitting ? "Merging…" : "Merge"}
           </button>

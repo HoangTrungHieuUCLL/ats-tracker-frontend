@@ -21,7 +21,7 @@ export default function JobsDrawer({
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div className="relative bg-white w-full max-w-md h-full shadow-lg p-5 overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold text-slate-900">Jobs with "{keywordName}"</h2>
+          <h2 className="text-base font-semibold text-black">Jobs with "{keywordName}"</h2>
           <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-700">
             ✕
           </button>
@@ -30,7 +30,7 @@ export default function JobsDrawer({
         <ul className="space-y-2">
           {query.data?.map((job) => (
             <li key={job.id} className="border border-slate-200 rounded-md p-2">
-              <Link to={`/jobs/${job.id}`} className="text-sm font-medium text-slate-900 hover:underline">
+              <Link to={`/jobs/${job.id}`} className="text-sm font-medium text-black hover:underline">
                 {job.company_name ?? "Untitled"}
               </Link>
               <p className="text-xs text-slate-500">{job.job_title ?? "—"}</p>

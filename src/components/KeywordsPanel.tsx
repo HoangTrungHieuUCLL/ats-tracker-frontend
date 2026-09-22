@@ -45,7 +45,7 @@ export default function KeywordsPanel({ keywords }: { keywords: JobKeywordDetail
                 key={`${kw.keyword_id}-${kw.surface_form}`}
                 className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs border ${
                   kw.importance === "must_have"
-                    ? "border-slate-900 bg-slate-900 text-white"
+                    ? "border-black bg-black text-white"
                     : kw.importance === "nice_to_have"
                       ? "border-slate-300 bg-slate-50 text-slate-700"
                       : "border-dashed border-slate-300 text-slate-500"

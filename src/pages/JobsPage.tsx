@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import ApplicationStatusSelect from "../components/ApplicationStatusSelect"
 import ManualTextModal from "../components/ManualTextModal"
@@ -16,13 +16,6 @@ import {
 import type { ApplicationStatus, BatchResultItem, JobListItem } from "../api/types"
 
 const MAX_URLS = 10
-
-function parseUrls(text: string): string[] {
-  return text
-    .split(/[\s,]+/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-}
 
 function isValidHttpUrl(value: string): boolean {
   try {
@@ -41,66 +34,116 @@ function formatMunichTime(iso: string): string {
   })
 }
 
+let rowIdCounter = 0
+function nextRowId() {
+  rowIdCounter += 1
+  return rowIdCounter
+}
+
 function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
-  const [text, setText] = useState("")
+  const [rows, setRows] = useState<{ id: number; value: string }[]>([
+    { id: nextRowId(), value: "" },
+  ])
   const [results, setResults] = useState<BatchResultItem[] | null>(null)
 
-  const tokens = useMemo(() => parseUrls(text), [text])
-  const uniqueTokens = useMemo(() => Array.from(new Set(tokens)), [tokens])
-  const invalidTokens = useMemo(() => tokens.filter((t) => !isValidHttpUrl(t)), [tokens])
-  const overLimit = uniqueTokens.length > MAX_URLS
+  const filledValues = rows.map((r) => r.value.trim()).filter(Boolean)
+  const uniqueValues = Array.from(new Set(filledValues))
+  const duplicateInInput = filledValues.length !== uniqueValues.length
+  const invalidValues = filledValues.filter((v) => !isValidHttpUrl(v))
 
   const mutation = useMutation({
     mutationFn: submitJobUrls,
     onSuccess: (data) => {
-      setResults(data);
-      const accepted = new Set(
-        data.filter((r) => r.result === "accepted").map((r) => r.url),
-      )
-      setText(tokens.filter((t) => !accepted.has(t)).join("\n"))
+      setResults(data)
+      const accepted = new Set(data.filter((r) => r.result === "accepted").map((r) => r.url))
+      const remaining = rows.filter((r) => !accepted.has(r.value.trim()))
+      setRows(remaining.length > 0 ? remaining : [{ id: nextRowId(), value: "" }])
       onAccepted()
     },
   })
 
+  function updateRow(id: number, value: string) {
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, value } : r)))
+  }
+
+  function addRow() {
+    if (rows.length >= MAX_URLS) return
+    setRows((prev) => [...prev, { id: nextRowId(), value: "" }])
+  }
+
+  function removeRow(id: number) {
+    setRows((prev) => (prev.length > 1 ? prev.filter((r) => r.id !== id) : prev))
+  }
+
   function handleSubmit() {
-    if (uniqueTokens.length === 0 || overLimit) return
-    mutation.mutate(uniqueTokens)
+    if (uniqueValues.length === 0 || invalidValues.length > 0 || duplicateInInput) return
+    mutation.mutate(uniqueValues)
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-semibold text-slate-900">Add job URLs</h2>
-        <span className={`text-xs ${overLimit ? "text-red-600" : "text-slate-500"}`}>
-          {uniqueTokens.length} / {MAX_URLS}
+    <div className="bg-white border-2 border-black rounded-lg p-4 mb-6">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-black uppercase tracking-wide text-black">Add job URLs</h2>
+        <span className="text-xs text-slate-500">
+          {rows.length} / {MAX_URLS}
         </span>
       </div>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        rows={4}
-        placeholder="Paste up to 10 job posting URLs, one per line…"
-        className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-400"
-      />
-      {invalidTokens.length > 0 && (
-        <ul className="mt-2 text-xs text-red-600 space-y-0.5">
-          {invalidTokens.map((t) => (
-            <li key={t}>Not a valid URL: {t}</li>
-          ))}
-        </ul>
+
+      <div className="space-y-2">
+        {rows.map((row) => {
+          const trimmed = row.value.trim()
+          const invalid = trimmed.length > 0 && !isValidHttpUrl(trimmed)
+          return (
+            <div key={row.id} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={row.value}
+                onChange={(e) => updateRow(row.id, e.target.value)}
+                placeholder="https://…"
+                className={`flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 ${
+                  invalid ? "border-red-400" : "border-slate-300"
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => removeRow(row.id)}
+                disabled={rows.length === 1}
+                title="Remove"
+                className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-slate-300 text-slate-500 hover:border-red-400 hover:text-red-600 disabled:opacity-30"
+              >
+                −
+              </button>
+              {row === rows[rows.length - 1] && (
+                <button
+                  type="button"
+                  onClick={addRow}
+                  disabled={rows.length >= MAX_URLS}
+                  title="Add another URL"
+                  className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md bg-black text-white hover:bg-red-600 disabled:opacity-30"
+                >
+                  +
+                </button>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {duplicateInInput && (
+        <p className="mt-2 text-xs text-red-600">Remove duplicate URLs before submitting.</p>
       )}
-      {overLimit && <p className="mt-2 text-xs text-red-600">Maximum {MAX_URLS} URLs per batch.</p>}
+
       <div className="mt-3 flex items-center gap-3">
         <button
           type="button"
           onClick={handleSubmit}
           disabled={
             mutation.isPending ||
-            uniqueTokens.length === 0 ||
-            overLimit ||
-            invalidTokens.length > 0
+            uniqueValues.length === 0 ||
+            invalidValues.length > 0 ||
+            duplicateInInput
           }
-          className="px-3 py-1.5 text-sm rounded-md bg-slate-900 text-white disabled:opacity-50"
+          className="px-4 py-1.5 text-sm font-bold uppercase tracking-wide rounded-md bg-red-600 text-white disabled:opacity-50"
         >
           {mutation.isPending ? "Submitting…" : "Submit"}
         </button>
@@ -242,7 +285,7 @@ function JobRowActions({ job }: { job: JobListItem }) {
         <button
           type="button"
           onClick={() => setModalOpen(true)}
-          className="text-xs text-blue-700 underline"
+          className="text-xs text-red-600 underline"
         >
           Paste job text
         </button>
@@ -273,7 +316,7 @@ function JobRowActions({ job }: { job: JobListItem }) {
           type="button"
           onClick={() => retryMutation.mutate()}
           disabled={retryMutation.isPending}
-          className="text-blue-700 underline"
+          className="text-red-600 underline"
         >
           Retry
         </button>
@@ -304,7 +347,7 @@ function JobRow({ job }: { job: JobListItem }) {
   return (
     <>
       <td className="px-3 py-2">
-        <Link to={`/jobs/${job.id}`} className="font-medium text-slate-900 hover:underline">
+        <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
           {job.company_name ?? "—"}
         </Link>
       </td>
@@ -347,7 +390,7 @@ function JobCard({ job }: { job: JobListItem }) {
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-3">
       <div className="flex items-start justify-between">
-        <Link to={`/jobs/${job.id}`} className="font-medium text-slate-900 hover:underline">
+        <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
           {job.company_name ?? "Untitled"}
         </Link>
         <ProcessingStatusChip status={job.processing_status} />

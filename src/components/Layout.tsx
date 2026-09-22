@@ -22,7 +22,7 @@ function QueueIndicator() {
 
   if (data.quota.daily_quota_reached && data.quota.resumes_at) {
     return (
-      <span className="text-sm text-amber-700">
+      <span className="text-sm text-red-400">
         Gemini daily quota reached. Resumes at {formatMunichTime(data.quota.resumes_at)} Munich time
       </span>
     )
@@ -36,22 +36,25 @@ function QueueIndicator() {
 
   if (processing === 0) return null
 
-  return <span className="text-sm text-slate-600">{processing} processing</span>
+  return <span className="text-sm text-white/70">{processing} processing</span>
 }
 
 export default function Layout() {
   const { logout } = useAuth()
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3 py-2 rounded-md text-sm font-medium ${
-      isActive ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-100"
+    `px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wide ${
+      isActive ? "bg-red-600 text-white" : "text-white/80 hover:text-white hover:bg-white/10"
     }`
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <nav className="bg-white border-b border-slate-200">
+    <div className="min-h-screen bg-white">
+      <nav className="bg-black">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            <span className="text-white font-black text-lg tracking-tight uppercase">
+              ATS Tracker
+            </span>
             <NavLink to="/jobs" className={linkClass}>
               Jobs
             </NavLink>
@@ -63,7 +66,7 @@ export default function Layout() {
             <QueueIndicator />
             <button
               onClick={logout}
-              className="text-sm text-slate-600 hover:text-slate-900"
+              className="text-sm font-bold uppercase tracking-wide text-white/70 hover:text-red-500"
               type="button"
             >
               Log out

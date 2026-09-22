@@ -4,8 +4,8 @@ import AuthLayout from "../components/AuthLayout"
 import { ApiError } from "../api/client"
 import { useAuth } from "../auth/AuthContext"
 
-export default function LoginPage() {
-  const { login } = useAuth()
+export default function RegisterPage() {
+  const { register } = useAuth()
   const navigate = useNavigate()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -17,11 +17,13 @@ export default function LoginPage() {
     setError(null)
     setSubmitting(true)
     try {
-      await login(username, password)
+      await register(username, password)
       navigate("/jobs", { replace: true })
     } catch (err) {
-      if (err instanceof ApiError && err.status === 401) {
-        setError("Incorrect username or password.")
+      if (err instanceof ApiError && err.status === 409) {
+        setError("That username is already taken.")
+      } else if (err instanceof ApiError && err.status === 422) {
+        setError("Username must be 3-32 characters (letters, numbers, _.-), password at least 8.")
       } else if (err instanceof ApiError && err.status === 429) {
         setError("Too many attempts. Try again in a minute.")
       } else {
@@ -34,13 +36,13 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      title="Howdy, mate!"
-      subtitle="Log in to track your job search."
+      title="Join in."
+      subtitle="Create an account to start tracking job postings."
       footer={
         <>
-          New here?{" "}
-          <Link to="/register" className="text-red-600 font-semibold hover:underline">
-            Create an account
+          Already have an account?{" "}
+          <Link to="/login" className="text-red-600 font-semibold hover:underline">
+            Log in
           </Link>
         </>
       }
@@ -64,18 +66,19 @@ export default function LoginPage() {
         <input
           id="password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
+        <p className="text-xs text-slate-500 mb-3">At least 8 characters.</p>
         {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
         <button
           type="submit"
-          disabled={submitting || username.length === 0 || password.length === 0}
+          disabled={submitting || username.length === 0 || password.length < 8}
           className="w-full bg-black text-white rounded-md py-2 text-sm font-bold uppercase tracking-wide disabled:opacity-50"
         >
-          {submitting ? "Logging in…" : "Log in"}
+          {submitting ? "Creating account…" : "Create account"}
         </button>
       </form>
     </AuthLayout>
