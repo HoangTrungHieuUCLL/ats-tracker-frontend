@@ -1,0 +1,23 @@
+{
+  "name": "IHATS",
+  "short_name": "IHATS",
+  "description": "Track job postings and ATS keywords.",
+  "start_url": "/jobs",
+  "display": "standalone",
+  "background_color": "#2541D6",
+  "theme_color": "#2541D6",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

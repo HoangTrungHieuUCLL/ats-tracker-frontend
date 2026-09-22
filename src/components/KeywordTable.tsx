@@ -38,9 +38,9 @@ export default function KeywordTable({
   onMerge: (item: KeywordDashboardItem) => void
 }) {
   return (
-    <div className="overflow-x-auto bg-white border-2 border-black rounded-lg">
+    <div className="overflow-x-auto bg-white border border-brand rounded-sm">
       <table className="min-w-full text-sm">
-        <thead className="bg-black text-left text-xs font-bold text-white uppercase tracking-wide">
+        <thead className="bg-brand text-left text-xs font-bold text-white uppercase tracking-wide">
           <tr>
             <th className="px-3 py-2">Keyword</th>
             <th className="px-3 py-2">Category</th>

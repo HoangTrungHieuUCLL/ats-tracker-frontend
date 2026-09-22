@@ -83,8 +83,9 @@ export default function JobDetailPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="bg-white border-2 border-black rounded-lg p-5">
+    <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+      <div className="space-y-6">
+      <div className="bg-white border border-brand rounded-sm p-5">
         <div className="flex items-start justify-between flex-wrap gap-2">
           <div>
             <h1 className="text-xl font-black text-black">{job.job_title ?? "Untitled"}</h1>
@@ -125,7 +126,7 @@ export default function JobDetailPage() {
                 onBlur={(e) =>
                   updateMutation.mutate({ interview_round: Number(e.target.value) || 1 })
                 }
-                className="w-16 border-2 border-black rounded-md px-1 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-16 border border-brand rounded-sm px-1 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
               />
             </label>
           )}
@@ -146,7 +147,7 @@ export default function JobDetailPage() {
         )}
       </div>
 
-      <div className="bg-white border-2 border-black rounded-lg p-5">
+      <div className="bg-white border border-brand rounded-sm p-5">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-black uppercase tracking-wide text-black">Details</h2>
           {!editing ? (
@@ -208,33 +209,6 @@ export default function JobDetailPage() {
         )}
       </div>
 
-      <div className="bg-white border-2 border-black rounded-lg p-5">
-        <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Keywords</h2>
-        <KeywordsPanel keywords={job.keywords} />
-      </div>
-
-      <div className="bg-white border-2 border-black rounded-lg p-5">
-        <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Notes</h2>
-        <NotesPanel jobId={job.id} notes={job.notes} />
-      </div>
-
-      {job.raw_text && (
-        <div className="bg-white border-2 border-black rounded-lg p-5">
-          <button
-            type="button"
-            onClick={() => setRawTextOpen((v) => !v)}
-            className="text-sm font-black uppercase tracking-wide text-black"
-          >
-            {rawTextOpen ? "▾" : "▸"} Raw job text
-          </button>
-          {rawTextOpen && (
-            <pre className="mt-3 text-xs text-slate-600 whitespace-pre-wrap max-h-96 overflow-y-auto">
-              {job.raw_text}
-            </pre>
-          )}
-        </div>
-      )}
-
       <div className="flex gap-3">
         <button
           type="button"
@@ -254,6 +228,36 @@ export default function JobDetailPage() {
         >
           Delete
         </button>
+      </div>
+      </div>
+
+      <div className="space-y-6">
+      <div className="bg-white border border-brand rounded-sm p-5">
+        <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Keywords</h2>
+        <KeywordsPanel keywords={job.keywords} />
+      </div>
+
+      <div className="bg-white border border-brand rounded-sm p-5">
+        <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Notes</h2>
+        <NotesPanel jobId={job.id} notes={job.notes} />
+      </div>
+
+      {job.raw_text && (
+        <div className="bg-white border border-brand rounded-sm p-5">
+          <button
+            type="button"
+            onClick={() => setRawTextOpen((v) => !v)}
+            className="text-sm font-black uppercase tracking-wide text-black"
+          >
+            {rawTextOpen ? "▾" : "▸"} Raw job text
+          </button>
+          {rawTextOpen && (
+            <pre className="mt-3 text-xs text-slate-600 whitespace-pre-wrap max-h-96 overflow-y-auto">
+              {job.raw_text}
+            </pre>
+          )}
+        </div>
+      )}
       </div>
     </div>
   )

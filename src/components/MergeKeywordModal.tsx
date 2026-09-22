@@ -20,7 +20,7 @@ export default function MergeKeywordModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5 border-2 border-black">
+      <div className="bg-white shadow-lg max-w-sm w-full p-5 border border-brand-dark rounded-sm">
         <h2 className="text-base font-black uppercase tracking-wide text-black mb-1">
           Merge "{source.canonical_name}" into…
         </h2>

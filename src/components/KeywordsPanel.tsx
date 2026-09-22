@@ -43,11 +43,11 @@ export default function KeywordsPanel({ keywords }: { keywords: JobKeywordDetail
             {byCategory.get(cat)!.map((kw) => (
               <span
                 key={`${kw.keyword_id}-${kw.surface_form}`}
-                className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border-2 ${
+                className={`inline-flex items-center gap-1 px-2 py-1 rounded-sm text-xs font-medium border ${
                   kw.importance === "must_have"
-                    ? "border-red-600 bg-red-600 text-white"
+                    ? "border-brand bg-brand text-white"
                     : kw.importance === "nice_to_have"
-                      ? "border-black bg-white text-black"
+                      ? "border-brand bg-white text-slate-900"
                       : "border-dashed border-slate-300 text-slate-500"
                 }`}
               >

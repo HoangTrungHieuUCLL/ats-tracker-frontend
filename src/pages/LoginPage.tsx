@@ -35,12 +35,13 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      title="Howdy, mate!"
+      tag="Sign in"
+      title="Welcome back."
       subtitle="Log in to track your job search."
       footer={
         <>
           New here?{" "}
-          <Link to="/register" className="text-red-600 font-semibold hover:underline">
+          <Link to="/register" className="text-brand font-semibold hover:underline">
             Create an account
           </Link>
         </>
