@@ -101,7 +101,7 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
                 value={row.value}
                 onChange={(e) => updateRow(row.id, e.target.value)}
                 placeholder="https://…"
-                className={`flex-1 ${invalid ? INPUT_ERROR : INPUT}`}
+                className={`flex-1 min-w-0 ${invalid ? INPUT_ERROR : INPUT}`}
               />
               <button
                 type="button"
