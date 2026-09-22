@@ -52,7 +52,7 @@ function KpiCard({
 }
 
 export default function DashboardPage() {
-  const [filters, setFilters] = useState<DashboardKeywordFilters>({ limit: 10 })
+  const [filters, setFilters] = useState<DashboardKeywordFilters>({ limit: 25 })
   const [category, setCategory] = useState<KeywordCategory | "all">("all")
   const [selected, setSelected] = useState<KeywordDashboardItem | null>(null)
   const [renaming, setRenaming] = useState<KeywordDashboardItem | null>(null)

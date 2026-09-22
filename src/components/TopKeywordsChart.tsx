@@ -11,6 +11,7 @@ import {
 import type { KeywordDashboardItem } from "../api/types"
 
 const MAX_HEIGHT = 300
+const MAX_BARS = 10
 
 export default function TopKeywordsChart({
   items,
@@ -20,7 +21,11 @@ export default function TopKeywordsChart({
   nJobs: number
 }) {
   const denominator = Math.max(nJobs, 1)
+  // items already arrive sorted by job_count desc — only the chart (the
+  // compact "landing" view) caps how many bars it shows. The keyword table
+  // below it still lists every item the query returned.
   const data = items
+    .slice(0, MAX_BARS)
     .map((item) => ({
       name: item.canonical_name,
       "Must-have %": Math.round((item.must_have_count / denominator) * 1000) / 10,
