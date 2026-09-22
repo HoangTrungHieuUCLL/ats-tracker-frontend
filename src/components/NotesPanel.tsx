@@ -39,7 +39,7 @@ function NoteItem({ jobId, note }: { jobId: string; note: JobNote }) {
               type="button"
               onClick={() => updateMutation.mutate()}
               disabled={updateMutation.isPending}
-              className="text-xs text-blue-700 underline"
+              className="text-xs text-red-600 underline"
             >
               Save
             </button>
@@ -52,7 +52,7 @@ function NoteItem({ jobId, note }: { jobId: string; note: JobNote }) {
         <div>
           <p className="text-sm text-slate-800 whitespace-pre-wrap">{note.body}</p>
           <div className="flex gap-2 mt-1">
-            <button type="button" onClick={() => setEditing(true)} className="text-xs text-blue-700 underline">
+            <button type="button" onClick={() => setEditing(true)} className="text-xs text-red-600 underline">
               Edit
             </button>
             <button
@@ -96,7 +96,7 @@ export default function NotesPanel({ jobId, notes }: { jobId: string; notes: Job
           type="button"
           onClick={() => addMutation.mutate()}
           disabled={addMutation.isPending || newBody.trim().length === 0}
-          className="mt-1 px-3 py-1 text-xs rounded-md bg-slate-900 text-white disabled:opacity-50"
+          className="mt-1 px-3 py-1 text-xs rounded-md bg-black text-white disabled:opacity-50"
         >
           Add note
         </button>

@@ -56,7 +56,7 @@ export default function KeywordTable({
             return (
               <tr key={item.keyword_id} className="hover:bg-slate-50">
                 <td
-                  className="px-3 py-2 font-medium text-slate-900 cursor-pointer"
+                  className="px-3 py-2 font-medium text-black cursor-pointer"
                   onClick={() => onSelect(item)}
                 >
                   {item.canonical_name}
@@ -94,21 +94,21 @@ export default function KeywordTable({
                   <button
                     type="button"
                     onClick={() => onRename(item)}
-                    className="text-xs text-blue-700 underline mr-2"
+                    className="text-xs text-red-600 underline mr-2"
                   >
                     Rename
                   </button>
                   <button
                     type="button"
                     onClick={() => onChangeCategory(item)}
-                    className="text-xs text-blue-700 underline mr-2"
+                    className="text-xs text-red-600 underline mr-2"
                   >
                     Category
                   </button>
                   <button
                     type="button"
                     onClick={() => onMerge(item)}
-                    className="text-xs text-blue-700 underline"
+                    className="text-xs text-red-600 underline"
                   >
                     Merge into…
                   </button>

@@ -86,7 +86,7 @@ export default function JobDetailPage() {
       <div className="bg-white border border-slate-200 rounded-lg p-5">
         <div className="flex items-start justify-between flex-wrap gap-2">
           <div>
-            <h1 className="text-lg font-semibold text-slate-900">{job.job_title ?? "Untitled"}</h1>
+            <h1 className="text-lg font-semibold text-black">{job.job_title ?? "Untitled"}</h1>
             <p className="text-sm text-slate-600">
               {job.company_name ?? "—"} {job.location ? `· ${job.location}` : ""}
             </p>
@@ -97,7 +97,7 @@ export default function JobDetailPage() {
               href={job.source_url}
               target="_blank"
               rel="noreferrer"
-              className="text-sm text-blue-700 underline"
+              className="text-sm text-red-600 underline"
             >
               Original posting
             </a>
@@ -147,9 +147,9 @@ export default function JobDetailPage() {
 
       <div className="bg-white border border-slate-200 rounded-lg p-5">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-slate-900">Details</h2>
+          <h2 className="text-sm font-semibold text-black">Details</h2>
           {!editing ? (
-            <button type="button" onClick={startEditing} className="text-xs text-blue-700 underline">
+            <button type="button" onClick={startEditing} className="text-xs text-red-600 underline">
               Edit
             </button>
           ) : (
@@ -158,7 +158,7 @@ export default function JobDetailPage() {
                 type="button"
                 onClick={saveEditing}
                 disabled={updateMutation.isPending}
-                className="text-xs text-blue-700 underline"
+                className="text-xs text-red-600 underline"
               >
                 Save
               </button>
@@ -208,12 +208,12 @@ export default function JobDetailPage() {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-lg p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-3">Keywords</h2>
+        <h2 className="text-sm font-semibold text-black mb-3">Keywords</h2>
         <KeywordsPanel keywords={job.keywords} />
       </div>
 
       <div className="bg-white border border-slate-200 rounded-lg p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-3">Notes</h2>
+        <h2 className="text-sm font-semibold text-black mb-3">Notes</h2>
         <NotesPanel jobId={job.id} notes={job.notes} />
       </div>
 
@@ -222,7 +222,7 @@ export default function JobDetailPage() {
           <button
             type="button"
             onClick={() => setRawTextOpen((v) => !v)}
-            className="text-sm font-semibold text-slate-900"
+            className="text-sm font-semibold text-black"
           >
             {rawTextOpen ? "▾" : "▸"} Raw job text
           </button>

@@ -8,6 +8,7 @@ import DashboardPage from "./pages/DashboardPage"
 import JobDetailPage from "./pages/JobDetailPage"
 import JobsPage from "./pages/JobsPage"
 import LoginPage from "./pages/LoginPage"
+import RegisterPage from "./pages/RegisterPage"
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route
               element={
                 <ProtectedRoute>
