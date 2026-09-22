@@ -54,6 +54,7 @@ function KpiCard({
 export default function DashboardPage() {
   const [filters, setFilters] = useState<DashboardKeywordFilters>({ limit: 25 })
   const [category, setCategory] = useState<KeywordCategory | "all">("all")
+  const [view, setView] = useState<"chart" | "list">("chart")
   const [selected, setSelected] = useState<KeywordDashboardItem | null>(null)
   const [renaming, setRenaming] = useState<KeywordDashboardItem | null>(null)
   const [recategorizing, setRecategorizing] = useState<KeywordDashboardItem | null>(null)
@@ -105,48 +106,28 @@ export default function DashboardPage() {
     <div>
       <DashboardFilterBar filters={filters} onChange={setFilters} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 mb-6 items-start">
-        {summary && (
-          <div className="space-y-2">
-            <KpiCard
-              label="Jobs analyzed"
-              value={Object.values(summary.by_application_status).reduce((a, b) => a + b, 0)}
-            />
-            <KpiCard
-              label="Role family split"
-              value=""
-              breakdown={Object.entries(summary.by_role_family) as [string, number][]}
-            />
-            <KpiCard
-              label="DE vs EN"
-              value={langTotal > 0 ? `${Math.round((deCount / langTotal) * 100)}% DE` : "—"}
-            />
-            <KpiCard
-              label="By application status"
-              value=""
-              breakdown={Object.entries(summary.by_application_status) as [string, number][]}
-            />
-          </div>
-        )}
-
-        {keywordsQuery.data && (
-          <div className="bg-white border border-brand rounded-sm p-4">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-sm font-black uppercase tracking-wide text-black">
-                Top keywords by share of jobs
-              </h2>
-              <p className="text-xs text-slate-500">
-                n = {nJobs} jobs{nJobs < 30 && " · small sample, percentages are rough"}
-              </p>
-            </div>
-            {keywordsQuery.data.items.length > 0 ? (
-              <TopKeywordsChart items={keywordsQuery.data.items} nJobs={nJobs} />
-            ) : (
-              <p className="text-sm text-slate-500">No keywords match these filters yet.</p>
-            )}
-          </div>
-        )}
-      </div>
+      {summary && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <KpiCard
+            label="Jobs analyzed"
+            value={Object.values(summary.by_application_status).reduce((a, b) => a + b, 0)}
+          />
+          <KpiCard
+            label="Role family split"
+            value=""
+            breakdown={Object.entries(summary.by_role_family) as [string, number][]}
+          />
+          <KpiCard
+            label="DE vs EN"
+            value={langTotal > 0 ? `${Math.round((deCount / langTotal) * 100)}% DE` : "—"}
+          />
+          <KpiCard
+            label="By application status"
+            value=""
+            breakdown={Object.entries(summary.by_application_status) as [string, number][]}
+          />
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2 mb-4">
         {CATEGORY_TABS.map((tab) => (
@@ -165,18 +146,56 @@ export default function DashboardPage() {
         ))}
       </div>
 
+      <div className="flex gap-2 mb-4 border-b border-brand">
+        {(
+          [
+            { value: "chart", label: "Chart" },
+            { value: "list", label: "Keyword list" },
+          ] as const
+        ).map((tab) => (
+          <button
+            key={tab.value}
+            type="button"
+            onClick={() => setView(tab.value)}
+            className={`px-4 py-2 text-sm font-bold uppercase tracking-wide border-b-2 -mb-px ${
+              view === tab.value
+                ? "border-brand text-brand"
+                : "border-transparent text-slate-500 hover:text-brand"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       {keywordsQuery.isLoading && <p className="text-sm text-slate-500">Loading…</p>}
 
-      {keywordsQuery.data && (
-        <>
-          <KeywordTable
-            items={keywordsQuery.data.items}
-            onSelect={setSelected}
-            onRename={setRenaming}
-            onChangeCategory={setRecategorizing}
-            onMerge={setMerging}
-          />
-        </>
+      {keywordsQuery.data && view === "chart" && (
+        <div className="bg-white border border-brand rounded-sm p-4">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-black uppercase tracking-wide text-black">
+              Top keywords by share of jobs
+            </h2>
+            <p className="text-xs text-slate-500">
+              n = {nJobs} jobs{nJobs < 30 && " · small sample, percentages are rough"}
+            </p>
+          </div>
+          {keywordsQuery.data.items.length > 0 ? (
+            <TopKeywordsChart items={keywordsQuery.data.items} nJobs={nJobs} />
+          ) : (
+            <p className="text-sm text-slate-500">No keywords match these filters yet.</p>
+          )}
+        </div>
+      )}
+
+      {keywordsQuery.data && view === "list" && (
+        <KeywordTable
+          items={keywordsQuery.data.items}
+          onSelect={setSelected}
+          onRename={setRenaming}
+          onChangeCategory={setRecategorizing}
+          onMerge={setMerging}
+        />
       )}
 
       {selected && (

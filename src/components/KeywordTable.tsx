@@ -1,5 +1,6 @@
+import { useMemo } from "react"
 import type { KeywordCategory, KeywordDashboardItem } from "../api/types"
-import { BTN_TEXT } from "../styles/ui"
+import { CHIP_BUTTON } from "../styles/ui"
 
 const CATEGORY_LABELS: Record<KeywordCategory, string> = {
   hard_skill: "Hard skill",
@@ -37,6 +38,11 @@ export default function KeywordTable({
   onChangeCategory: (item: KeywordDashboardItem) => void
   onMerge: (item: KeywordDashboardItem) => void
 }) {
+  const sortedItems = useMemo(
+    () => [...items].sort((a, b) => a.canonical_name.localeCompare(b.canonical_name)),
+    [items],
+  )
+
   return (
     <div className="overflow-x-auto bg-white border border-brand rounded-sm">
       <table className="min-w-full text-sm">
@@ -51,7 +57,7 @@ export default function KeywordTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
-          {items.map((item) => {
+          {sortedItems.map((item) => {
             const groups = groupSurfaceForms(item)
             const mustHavePct = Math.round((item.must_have_count / Math.max(item.job_count, 1)) * 100)
             return (
@@ -91,27 +97,19 @@ export default function KeywordTable({
                       ),
                   )}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap">
-                  <button
-                    type="button"
-                    onClick={() => onRename(item)}
-                    className={`text-xs ${BTN_TEXT} mr-2`}
-                  >
+                <td className="px-3 py-2 whitespace-nowrap space-x-1.5">
+                  <button type="button" onClick={() => onRename(item)} className={CHIP_BUTTON}>
                     Rename
                   </button>
                   <button
                     type="button"
                     onClick={() => onChangeCategory(item)}
-                    className={`text-xs ${BTN_TEXT} mr-2`}
+                    className={CHIP_BUTTON}
                   >
                     Category
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => onMerge(item)}
-                    className={`text-xs ${BTN_TEXT}`}
-                  >
-                    Merge into…
+                  <button type="button" onClick={() => onMerge(item)} className={CHIP_BUTTON}>
+                    Merge
                   </button>
                 </td>
               </tr>

@@ -32,6 +32,16 @@ export const BTN_ICON =
   "text-brand hover:bg-brand hover:text-white transition-colors disabled:opacity-30 " +
   "disabled:pointer-events-none"
 
+export const CHIP_BUTTON =
+  "inline-flex items-center px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide " +
+  "rounded-full border border-brand text-brand hover:bg-brand hover:text-white " +
+  "transition-colors disabled:opacity-40 disabled:pointer-events-none"
+
+export const CHIP_BUTTON_DANGER =
+  "inline-flex items-center px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide " +
+  "rounded-full border border-red-600 text-red-600 hover:bg-red-600 hover:text-white " +
+  "transition-colors disabled:opacity-40 disabled:pointer-events-none"
+
 export const BTN_ICON_PRIMARY =
   "shrink-0 w-8 h-8 flex items-center justify-center rounded-sm bg-brand text-white " +
   "hover:bg-brand-dark transition-colors disabled:opacity-30 disabled:pointer-events-none"
