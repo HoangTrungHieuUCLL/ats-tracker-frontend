@@ -7,6 +7,7 @@ import NotesPanel from "../components/NotesPanel"
 import ProcessingStatusChip from "../components/ProcessingStatusChip"
 import { deleteJob, getJob, reanalyzeJob, updateJob } from "../api/jobs"
 import type { ApplicationStatus, JobUpdatePayload } from "../api/types"
+import { BTN_DANGER_OUTLINE, BTN_SECONDARY, BTN_TEXT, BTN_TEXT_MUTED, INPUT } from "../styles/ui"
 
 const EDITABLE_FIELDS: { key: keyof JobUpdatePayload; label: string }[] = [
   { key: "company_name", label: "Company" },
@@ -83,10 +84,10 @@ export default function JobDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="bg-white border border-slate-200 rounded-lg p-5">
+      <div className="bg-white border-2 border-black rounded-lg p-5">
         <div className="flex items-start justify-between flex-wrap gap-2">
           <div>
-            <h1 className="text-lg font-semibold text-black">{job.job_title ?? "Untitled"}</h1>
+            <h1 className="text-xl font-black text-black">{job.job_title ?? "Untitled"}</h1>
             <p className="text-sm text-slate-600">
               {job.company_name ?? "—"} {job.location ? `· ${job.location}` : ""}
             </p>
@@ -97,7 +98,7 @@ export default function JobDetailPage() {
               href={job.source_url}
               target="_blank"
               rel="noreferrer"
-              className="text-sm text-red-600 underline"
+              className={`text-sm ${BTN_TEXT}`}
             >
               Original posting
             </a>
@@ -124,7 +125,7 @@ export default function JobDetailPage() {
                 onBlur={(e) =>
                   updateMutation.mutate({ interview_round: Number(e.target.value) || 1 })
                 }
-                className="w-16 border border-slate-300 rounded-md px-1 py-0.5 text-sm"
+                className="w-16 border-2 border-black rounded-md px-1 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </label>
           )}
@@ -132,7 +133,7 @@ export default function JobDetailPage() {
 
         {job.status_history.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase mb-1">Status history</h3>
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Status history</h3>
             <ul className="text-xs text-slate-500 space-y-0.5">
               {job.status_history.map((h) => (
                 <li key={h.id}>
@@ -145,11 +146,11 @@ export default function JobDetailPage() {
         )}
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-lg p-5">
+      <div className="bg-white border-2 border-black rounded-lg p-5">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-black">Details</h2>
+          <h2 className="text-sm font-black uppercase tracking-wide text-black">Details</h2>
           {!editing ? (
-            <button type="button" onClick={startEditing} className="text-xs text-red-600 underline">
+            <button type="button" onClick={startEditing} className={`text-xs ${BTN_TEXT}`}>
               Edit
             </button>
           ) : (
@@ -158,11 +159,11 @@ export default function JobDetailPage() {
                 type="button"
                 onClick={saveEditing}
                 disabled={updateMutation.isPending}
-                className="text-xs text-red-600 underline"
+                className={`text-xs ${BTN_TEXT}`}
               >
                 Save
               </button>
-              <button type="button" onClick={() => setEditing(false)} className="text-xs text-slate-500">
+              <button type="button" onClick={() => setEditing(false)} className={`text-xs ${BTN_TEXT_MUTED}`}>
                 Cancel
               </button>
             </div>
@@ -177,7 +178,7 @@ export default function JobDetailPage() {
                 <input
                   value={draft[key] ?? ""}
                   onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}
-                  className="mt-0.5 w-full border border-slate-300 rounded-md px-2 py-1 text-sm"
+                  className={`mt-0.5 w-full ${INPUT} py-1`}
                 />
               </label>
             ))}
@@ -207,22 +208,22 @@ export default function JobDetailPage() {
         )}
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-lg p-5">
-        <h2 className="text-sm font-semibold text-black mb-3">Keywords</h2>
+      <div className="bg-white border-2 border-black rounded-lg p-5">
+        <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Keywords</h2>
         <KeywordsPanel keywords={job.keywords} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-lg p-5">
-        <h2 className="text-sm font-semibold text-black mb-3">Notes</h2>
+      <div className="bg-white border-2 border-black rounded-lg p-5">
+        <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Notes</h2>
         <NotesPanel jobId={job.id} notes={job.notes} />
       </div>
 
       {job.raw_text && (
-        <div className="bg-white border border-slate-200 rounded-lg p-5">
+        <div className="bg-white border-2 border-black rounded-lg p-5">
           <button
             type="button"
             onClick={() => setRawTextOpen((v) => !v)}
-            className="text-sm font-semibold text-black"
+            className="text-sm font-black uppercase tracking-wide text-black"
           >
             {rawTextOpen ? "▾" : "▸"} Raw job text
           </button>
@@ -239,7 +240,7 @@ export default function JobDetailPage() {
           type="button"
           onClick={() => reanalyzeMutation.mutate()}
           disabled={reanalyzeMutation.isPending || !job.raw_text}
-          className="px-3 py-1.5 text-sm rounded-md border border-slate-300 disabled:opacity-50"
+          className={BTN_SECONDARY}
         >
           Re-analyze
         </button>
@@ -249,7 +250,7 @@ export default function JobDetailPage() {
             if (confirm("Delete this job permanently?")) deleteMutation.mutate()
           }}
           disabled={deleteMutation.isPending}
-          className="px-3 py-1.5 text-sm rounded-md border border-red-300 text-red-700"
+          className={BTN_DANGER_OUTLINE}
         >
           Delete
         </button>
