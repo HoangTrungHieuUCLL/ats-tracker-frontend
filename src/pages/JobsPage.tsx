@@ -346,34 +346,39 @@ function JobRow({ job }: { job: JobListItem }) {
 
   return (
     <>
-      <td className="px-3 py-2">
+      <td className="px-2 py-1.5">
         <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
           {job.company_name ?? "—"}
         </Link>
       </td>
-      <td className="px-3 py-2">{job.job_title ?? "—"}</td>
-      <td className="px-3 py-2 text-slate-500">{job.role_family ?? "—"}</td>
-      <td className="px-3 py-2 text-slate-500">
-        {job.employment_type ?? "—"} {job.seniority ? `· ${job.seniority}` : ""}
+      <td className="px-2 py-1.5 max-w-[180px] truncate" title={job.job_title ?? undefined}>
+        {job.job_title ?? "—"}
       </td>
-      <td className="px-3 py-2 text-slate-500">{job.language?.toUpperCase() ?? "—"}</td>
-      <td className="px-3 py-2 text-slate-500">{job.location ?? "—"}</td>
-      <td className="px-3 py-2">
+      <td className="px-2 py-1.5 text-slate-500 text-xs leading-tight">
+        <div>{job.role_family ?? "—"}</div>
+        <div>
+          {job.employment_type ?? "—"} {job.seniority ? `· ${job.seniority}` : ""}
+        </div>
+      </td>
+      <td className="px-2 py-1.5 text-slate-500">
+        {job.location ?? "—"} {job.language && `(${job.language.toUpperCase()})`}
+      </td>
+      <td className="px-2 py-1.5">
         <ApplicationStatusSelect
           value={job.application_status}
           disabled={statusMutation.isPending}
           onChange={(value) => statusMutation.mutate(value)}
         />
       </td>
-      <td className="px-3 py-2">
+      <td className="px-2 py-1.5">
         <ProcessingStatusChip status={job.processing_status} />
         <div className="mt-1">
           <JobRowActions job={job} />
         </div>
       </td>
-      <td className="px-3 py-2 text-slate-500">{job.application_deadline ?? "—"}</td>
-      <td className="px-3 py-2 text-slate-500">
-        {new Date(job.created_at).toLocaleDateString()}
+      <td className="px-2 py-1.5 text-slate-500 text-xs leading-tight">
+        <div>{job.application_deadline ? `Due ${job.application_deadline}` : ""}</div>
+        <div>Added {new Date(job.created_at).toLocaleDateString()}</div>
       </td>
     </>
   )
@@ -422,7 +427,7 @@ export default function JobsPage() {
   })
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4 items-start">
       <div className="lg:sticky lg:top-6 space-y-4">
         <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
         <FiltersBar filters={filters} onChange={setFilters} />
@@ -442,16 +447,13 @@ export default function JobsPage() {
               <table className="min-w-full text-sm">
                 <thead className="bg-brand text-left text-xs font-bold text-white uppercase tracking-wide">
                   <tr>
-                    <th className="px-3 py-2">Company</th>
-                    <th className="px-3 py-2">Title</th>
-                    <th className="px-3 py-2">Role family</th>
-                    <th className="px-3 py-2">Type / seniority</th>
-                    <th className="px-3 py-2">Lang</th>
-                    <th className="px-3 py-2">Location</th>
-                    <th className="px-3 py-2">Application status</th>
-                    <th className="px-3 py-2">Processing</th>
-                    <th className="px-3 py-2">Deadline</th>
-                    <th className="px-3 py-2">Added</th>
+                    <th className="px-2 py-2">Company</th>
+                    <th className="px-2 py-2">Title</th>
+                    <th className="px-2 py-2">Role</th>
+                    <th className="px-2 py-2">Location</th>
+                    <th className="px-2 py-2">Status</th>
+                    <th className="px-2 py-2">Processing</th>
+                    <th className="px-2 py-2">Dates</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">

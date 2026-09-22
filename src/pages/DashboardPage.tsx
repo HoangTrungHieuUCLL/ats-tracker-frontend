@@ -21,17 +21,38 @@ const CATEGORY_TABS: { value: KeywordCategory | "all"; label: string }[] = [
   { value: "methodology", label: "Methodology" },
 ]
 
-function KpiCard({ label, value }: { label: string; value: string | number }) {
+function KpiCard({
+  label,
+  value,
+  breakdown,
+}: {
+  label: string
+  value: string | number
+  breakdown?: [string, number][]
+}) {
   return (
-    <div className="bg-white border border-brand rounded-sm p-4">
-      <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">{label}</p>
-      <p className="text-xl font-black text-black">{value}</p>
+    <div className="bg-white border border-brand rounded-sm px-3 py-2">
+      <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide truncate">
+        {label}
+      </p>
+      {breakdown && breakdown.length > 0 ? (
+        <ul className="text-xs text-black leading-tight">
+          {breakdown.map(([k, v]) => (
+            <li key={k} className="flex justify-between gap-2">
+              <span className="truncate">{k}</span>
+              <span className="font-bold shrink-0">{v}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-lg font-black text-black truncate">{value}</p>
+      )}
     </div>
   )
 }
 
 export default function DashboardPage() {
-  const [filters, setFilters] = useState<DashboardKeywordFilters>({ limit: 25 })
+  const [filters, setFilters] = useState<DashboardKeywordFilters>({ limit: 10 })
   const [category, setCategory] = useState<KeywordCategory | "all">("all")
   const [selected, setSelected] = useState<KeywordDashboardItem | null>(null)
   const [renaming, setRenaming] = useState<KeywordDashboardItem | null>(null)
@@ -84,15 +105,17 @@ export default function DashboardPage() {
     <div>
       <DashboardFilterBar filters={filters} onChange={setFilters} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 mb-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-4 mb-6 items-start">
         {summary && (
-          <div className="grid grid-cols-2 gap-3">
-            <KpiCard label="Jobs analyzed" value={Object.values(summary.by_application_status).reduce((a, b) => a + b, 0)} />
+          <div className="space-y-2">
+            <KpiCard
+              label="Jobs analyzed"
+              value={Object.values(summary.by_application_status).reduce((a, b) => a + b, 0)}
+            />
             <KpiCard
               label="Role family split"
-              value={Object.entries(summary.by_role_family)
-                .map(([k, v]) => `${k}: ${v}`)
-                .join(", ") || "—"}
+              value=""
+              breakdown={Object.entries(summary.by_role_family) as [string, number][]}
             />
             <KpiCard
               label="DE vs EN"
@@ -100,9 +123,8 @@ export default function DashboardPage() {
             />
             <KpiCard
               label="By application status"
-              value={Object.entries(summary.by_application_status)
-                .map(([k, v]) => `${k}: ${v}`)
-                .join(", ") || "—"}
+              value=""
+              breakdown={Object.entries(summary.by_application_status) as [string, number][]}
             />
           </div>
         )}
