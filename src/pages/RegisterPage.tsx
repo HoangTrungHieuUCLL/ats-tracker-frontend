@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import AuthLayout from "../components/AuthLayout"
 import { ApiError } from "../api/client"
 import { useAuth } from "../auth/AuthContext"
+import { BTN_PRIMARY, INPUT } from "../styles/ui"
 
 export default function RegisterPage() {
   const { register } = useAuth()
@@ -58,7 +59,7 @@ export default function RegisterPage() {
           autoComplete="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className={`w-full ${INPUT} mb-3`}
         />
         <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="password">
           Password
@@ -69,14 +70,14 @@ export default function RegisterPage() {
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className={`w-full ${INPUT} mb-3`}
         />
         <p className="text-xs text-slate-500 mb-3">At least 8 characters.</p>
         {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
         <button
           type="submit"
           disabled={submitting || username.length === 0 || password.length < 8}
-          className="w-full bg-black text-white rounded-md py-2 text-sm font-bold uppercase tracking-wide disabled:opacity-50"
+          className={`w-full ${BTN_PRIMARY}`}
         >
           {submitting ? "Creating account…" : "Create account"}
         </button>

@@ -1,4 +1,5 @@
 import type { ApplicationStatus } from "../api/types"
+import { SELECT } from "../styles/ui"
 
 const OPTIONS: ApplicationStatus[] = [
   "saved",
@@ -24,7 +25,7 @@ export default function ApplicationStatusSelect({
       value={value}
       disabled={disabled}
       onChange={(e) => onChange(e.target.value as ApplicationStatus)}
-      className="border border-slate-300 rounded-md px-2 py-1 text-sm bg-white disabled:opacity-50"
+      className={SELECT}
     >
       {OPTIONS.map((option) => (
         <option key={option} value={option}>

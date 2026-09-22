@@ -1,4 +1,5 @@
 import type { KeywordCategory, KeywordDashboardItem } from "../api/types"
+import { BTN_TEXT } from "../styles/ui"
 
 const CATEGORY_LABELS: Record<KeywordCategory, string> = {
   hard_skill: "Hard skill",
@@ -37,9 +38,9 @@ export default function KeywordTable({
   onMerge: (item: KeywordDashboardItem) => void
 }) {
   return (
-    <div className="overflow-x-auto bg-white border border-slate-200 rounded-lg">
+    <div className="overflow-x-auto bg-white border-2 border-black rounded-lg">
       <table className="min-w-full text-sm">
-        <thead className="bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase">
+        <thead className="bg-black text-left text-xs font-bold text-white uppercase tracking-wide">
           <tr>
             <th className="px-3 py-2">Keyword</th>
             <th className="px-3 py-2">Category</th>
@@ -94,21 +95,21 @@ export default function KeywordTable({
                   <button
                     type="button"
                     onClick={() => onRename(item)}
-                    className="text-xs text-red-600 underline mr-2"
+                    className={`text-xs ${BTN_TEXT} mr-2`}
                   >
                     Rename
                   </button>
                   <button
                     type="button"
                     onClick={() => onChangeCategory(item)}
-                    className="text-xs text-red-600 underline mr-2"
+                    className={`text-xs ${BTN_TEXT} mr-2`}
                   >
                     Category
                   </button>
                   <button
                     type="button"
                     onClick={() => onMerge(item)}
-                    className="text-xs text-red-600 underline"
+                    className={`text-xs ${BTN_TEXT}`}
                   >
                     Merge into…
                   </button>

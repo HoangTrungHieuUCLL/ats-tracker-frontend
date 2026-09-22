@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import AuthLayout from "../components/AuthLayout"
 import { ApiError } from "../api/client"
 import { useAuth } from "../auth/AuthContext"
+import { BTN_PRIMARY, INPUT } from "../styles/ui"
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -56,7 +57,7 @@ export default function LoginPage() {
           autoComplete="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className={`w-full ${INPUT} mb-3`}
         />
         <label className="block text-sm font-medium text-slate-700 mb-1" htmlFor="password">
           Password
@@ -67,13 +68,13 @@ export default function LoginPage() {
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className={`w-full ${INPUT} mb-3`}
         />
         {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
         <button
           type="submit"
           disabled={submitting || username.length === 0 || password.length === 0}
-          className="w-full bg-black text-white rounded-md py-2 text-sm font-bold uppercase tracking-wide disabled:opacity-50"
+          className={`w-full ${BTN_PRIMARY}`}
         >
           {submitting ? "Logging in…" : "Log in"}
         </button>

@@ -14,6 +14,7 @@ import {
   type JobFilters,
 } from "../api/jobs"
 import type { ApplicationStatus, BatchResultItem, JobListItem } from "../api/types"
+import { BTN_ICON, BTN_ICON_PRIMARY, BTN_PRIMARY, BTN_TEXT, INPUT, INPUT_ERROR, SELECT } from "../styles/ui"
 
 const MAX_URLS = 10
 
@@ -100,16 +101,14 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
                 value={row.value}
                 onChange={(e) => updateRow(row.id, e.target.value)}
                 placeholder="https://…"
-                className={`flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                  invalid ? "border-red-400" : "border-slate-300"
-                }`}
+                className={`flex-1 ${invalid ? INPUT_ERROR : INPUT}`}
               />
               <button
                 type="button"
                 onClick={() => removeRow(row.id)}
                 disabled={rows.length === 1}
                 title="Remove"
-                className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md border border-slate-300 text-slate-500 hover:border-red-400 hover:text-red-600 disabled:opacity-30"
+                className={BTN_ICON}
               >
                 −
               </button>
@@ -119,7 +118,7 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
                   onClick={addRow}
                   disabled={rows.length >= MAX_URLS}
                   title="Add another URL"
-                  className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md bg-black text-white hover:bg-red-600 disabled:opacity-30"
+                  className={BTN_ICON_PRIMARY}
                 >
                   +
                 </button>
@@ -143,7 +142,7 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
             invalidValues.length > 0 ||
             duplicateInInput
           }
-          className="px-4 py-1.5 text-sm font-bold uppercase tracking-wide rounded-md bg-red-600 text-white disabled:opacity-50"
+          className={BTN_PRIMARY}
         >
           {mutation.isPending ? "Submitting…" : "Submit"}
         </button>
@@ -185,12 +184,12 @@ function FiltersBar({
         placeholder="Search company or title…"
         value={filters.q ?? ""}
         onChange={(e) => onChange({ ...filters, q: e.target.value })}
-        className="border border-slate-300 rounded-md px-3 py-1.5 text-sm flex-1 min-w-[180px]"
+        className={`${INPUT} flex-1 min-w-[180px]`}
       />
       <select
         value={filters.application_status ?? ""}
         onChange={(e) => onChange({ ...filters, application_status: e.target.value || undefined })}
-        className="border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+        className={SELECT}
       >
         <option value="">All application statuses</option>
         {["saved", "applied", "interviewing", "offer", "rejected", "withdrawn", "closed"].map(
@@ -204,7 +203,7 @@ function FiltersBar({
       <select
         value={filters.role_family ?? ""}
         onChange={(e) => onChange({ ...filters, role_family: e.target.value || undefined })}
-        className="border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+        className={SELECT}
       >
         <option value="">All role families</option>
         {["data_analyst", "data_engineer", "ai_engineer", "other"].map((s) => (
@@ -216,7 +215,7 @@ function FiltersBar({
       <select
         value={filters.employment_type ?? ""}
         onChange={(e) => onChange({ ...filters, employment_type: e.target.value || undefined })}
-        className="border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+        className={SELECT}
       >
         <option value="">All employment types</option>
         {["full_time", "part_time", "internship", "working_student", "trainee", "contract"].map(
@@ -230,7 +229,7 @@ function FiltersBar({
       <select
         value={filters.language ?? ""}
         onChange={(e) => onChange({ ...filters, language: e.target.value || undefined })}
-        className="border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+        className={SELECT}
       >
         <option value="">All languages</option>
         <option value="de">DE</option>
@@ -240,7 +239,7 @@ function FiltersBar({
       <select
         value={filters.processing_status ?? ""}
         onChange={(e) => onChange({ ...filters, processing_status: e.target.value || undefined })}
-        className="border border-slate-300 rounded-md px-2 py-1.5 text-sm"
+        className={SELECT}
       >
         <option value="">All processing statuses</option>
         {[
@@ -285,7 +284,7 @@ function JobRowActions({ job }: { job: JobListItem }) {
         <button
           type="button"
           onClick={() => setModalOpen(true)}
-          className="text-xs text-red-600 underline"
+          className={`text-xs ${BTN_TEXT}`}
         >
           Paste job text
         </button>
@@ -316,7 +315,7 @@ function JobRowActions({ job }: { job: JobListItem }) {
           type="button"
           onClick={() => retryMutation.mutate()}
           disabled={retryMutation.isPending}
-          className="text-red-600 underline"
+          className={BTN_TEXT}
         >
           Retry
         </button>
@@ -388,7 +387,7 @@ function JobCard({ job }: { job: JobListItem }) {
   })
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-3">
+    <div className="bg-white border-2 border-black rounded-lg p-3">
       <div className="flex items-start justify-between">
         <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
           {job.company_name ?? "Untitled"}
@@ -435,9 +434,9 @@ export default function JobsPage() {
 
       {query.data && query.data.items.length > 0 && (
         <>
-          <div className="hidden md:block overflow-x-auto bg-white border border-slate-200 rounded-lg">
+          <div className="hidden md:block overflow-x-auto bg-white border-2 border-black rounded-lg">
             <table className="min-w-full text-sm">
-              <thead className="bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase">
+              <thead className="bg-black text-left text-xs font-bold text-white uppercase tracking-wide">
                 <tr>
                   <th className="px-3 py-2">Company</th>
                   <th className="px-3 py-2">Title</th>

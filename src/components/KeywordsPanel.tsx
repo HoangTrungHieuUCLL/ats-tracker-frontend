@@ -36,18 +36,18 @@ export default function KeywordsPanel({ keywords }: { keywords: JobKeywordDetail
     <div className="space-y-4">
       {CATEGORY_ORDER.filter((cat) => byCategory.has(cat)).map((cat) => (
         <div key={cat}>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">
+          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
             {CATEGORY_LABELS[cat]}
           </h3>
           <div className="flex flex-wrap gap-2">
             {byCategory.get(cat)!.map((kw) => (
               <span
                 key={`${kw.keyword_id}-${kw.surface_form}`}
-                className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs border ${
+                className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border-2 ${
                   kw.importance === "must_have"
-                    ? "border-black bg-black text-white"
+                    ? "border-red-600 bg-red-600 text-white"
                     : kw.importance === "nice_to_have"
-                      ? "border-slate-300 bg-slate-50 text-slate-700"
+                      ? "border-black bg-white text-black"
                       : "border-dashed border-slate-300 text-slate-500"
                 }`}
               >

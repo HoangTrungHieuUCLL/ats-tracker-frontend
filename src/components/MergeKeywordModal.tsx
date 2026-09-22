@@ -1,5 +1,6 @@
 import { useState } from "react"
 import type { KeywordDashboardItem } from "../api/types"
+import { BTN_PRIMARY, BTN_SECONDARY, SELECT } from "../styles/ui"
 
 export default function MergeKeywordModal({
   source,
@@ -19,8 +20,8 @@ export default function MergeKeywordModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5">
-        <h2 className="text-base font-semibold text-black mb-1">
+      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5 border-2 border-black">
+        <h2 className="text-base font-black uppercase tracking-wide text-black mb-1">
           Merge "{source.canonical_name}" into…
         </h2>
         <p className="text-xs text-slate-500 mb-3">
@@ -32,7 +33,7 @@ export default function MergeKeywordModal({
           <select
             value={targetId}
             onChange={(e) => setTargetId(e.target.value)}
-            className="w-full border border-slate-300 rounded-md px-2 py-1.5 text-sm mb-3"
+            className={`w-full ${SELECT} mb-3`}
           >
             {options.map((o) => (
               <option key={o.keyword_id} value={o.keyword_id}>
@@ -45,7 +46,7 @@ export default function MergeKeywordModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 text-sm rounded-md border border-slate-300"
+            className={BTN_SECONDARY}
           >
             Cancel
           </button>
@@ -57,7 +58,7 @@ export default function MergeKeywordModal({
                 onConfirm(targetId)
               }
             }}
-            className="px-3 py-1.5 text-sm rounded-md bg-black text-white disabled:opacity-50"
+            className={BTN_PRIMARY}
           >
             {submitting ? "Merging…" : "Merge"}
           </button>

@@ -8,6 +8,7 @@ import TopKeywordsChart from "../components/TopKeywordsChart"
 import { getDashboardKeywords, getDashboardSummary, type DashboardKeywordFilters } from "../api/dashboard"
 import { mergeKeywords, updateKeyword } from "../api/keywords"
 import type { KeywordCategory, KeywordDashboardItem } from "../api/types"
+import { BTN_PRIMARY, BTN_SECONDARY, INPUT, SELECT } from "../styles/ui"
 
 const CATEGORY_TABS: { value: KeywordCategory | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -22,9 +23,9 @@ const CATEGORY_TABS: { value: KeywordCategory | "all"; label: string }[] = [
 
 function KpiCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-4">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-xl font-semibold text-black">{value}</p>
+    <div className="bg-white border-2 border-black rounded-lg p-4">
+      <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">{label}</p>
+      <p className="text-xl font-black text-black">{value}</p>
     </div>
   )
 }
@@ -111,10 +112,10 @@ export default function DashboardPage() {
             key={tab.value}
             type="button"
             onClick={() => setCategory(tab.value)}
-            className={`px-3 py-1.5 text-xs rounded-full border ${
+            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wide rounded-full border-2 ${
               category === tab.value
-                ? "bg-black text-white border-black"
-                : "border-slate-300 text-slate-600"
+                ? "bg-red-600 text-white border-red-600"
+                : "border-black text-black hover:bg-black hover:text-white"
             }`}
           >
             {tab.label}
@@ -133,8 +134,8 @@ export default function DashboardPage() {
             </p>
           )}
 
-          <div className="bg-white border border-slate-200 rounded-lg p-4 mb-6">
-            <h2 className="text-sm font-semibold text-black mb-3">
+          <div className="bg-white border-2 border-black rounded-lg p-4 mb-6">
+            <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">
               Top keywords by share of jobs
             </h2>
             {keywordsQuery.data.items.length > 0 ? (
@@ -207,22 +208,22 @@ function RenamePrompt({
   const [value, setValue] = useState(initial)
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5">
-        <h2 className="text-base font-semibold text-black mb-3">Rename keyword</h2>
+      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5 border-2 border-black">
+        <h2 className="text-base font-black uppercase tracking-wide text-black mb-3">Rename keyword</h2>
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="w-full border border-slate-300 rounded-md px-2 py-1.5 text-sm mb-3"
+          className={`w-full ${INPUT} mb-3`}
         />
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={onCancel} className="px-3 py-1.5 text-sm rounded-md border border-slate-300">
+          <button type="button" onClick={onCancel} className={BTN_SECONDARY}>
             Cancel
           </button>
           <button
             type="button"
             disabled={submitting || value.trim().length === 0}
             onClick={() => onConfirm(value.trim())}
-            className="px-3 py-1.5 text-sm rounded-md bg-black text-white disabled:opacity-50"
+            className={BTN_PRIMARY}
           >
             Save
           </button>
@@ -246,12 +247,12 @@ function CategoryPrompt({
   const [value, setValue] = useState<KeywordCategory>(initial)
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5">
-        <h2 className="text-base font-semibold text-black mb-3">Change category</h2>
+      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5 border-2 border-black">
+        <h2 className="text-base font-black uppercase tracking-wide text-black mb-3">Change category</h2>
         <select
           value={value}
           onChange={(e) => setValue(e.target.value as KeywordCategory)}
-          className="w-full border border-slate-300 rounded-md px-2 py-1.5 text-sm mb-3"
+          className={`w-full ${SELECT} mb-3`}
         >
           {CATEGORY_TABS.filter((t) => t.value !== "all").map((t) => (
             <option key={t.value} value={t.value}>
@@ -260,14 +261,14 @@ function CategoryPrompt({
           ))}
         </select>
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={onCancel} className="px-3 py-1.5 text-sm rounded-md border border-slate-300">
+          <button type="button" onClick={onCancel} className={BTN_SECONDARY}>
             Cancel
           </button>
           <button
             type="button"
             disabled={submitting}
             onClick={() => onConfirm(value)}
-            className="px-3 py-1.5 text-sm rounded-md bg-black text-white disabled:opacity-50"
+            className={BTN_PRIMARY}
           >
             Save
           </button>
