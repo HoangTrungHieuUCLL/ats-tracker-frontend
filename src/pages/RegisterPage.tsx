@@ -37,12 +37,13 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout
-      title="Join in."
+      tag="Private beta"
+      title="Join IHATS."
       subtitle="Create an account to start tracking job postings."
       footer={
         <>
           Already have an account?{" "}
-          <Link to="/login" className="text-red-600 font-semibold hover:underline">
+          <Link to="/login" className="text-brand font-semibold hover:underline">
             Log in
           </Link>
         </>

@@ -22,7 +22,7 @@ function QueueIndicator() {
 
   if (data.quota.daily_quota_reached && data.quota.resumes_at) {
     return (
-      <span className="text-sm text-red-400">
+      <span className="text-sm text-red-300">
         Gemini daily quota reached. Resumes at {formatMunichTime(data.quota.resumes_at)} Munich time
       </span>
     )
@@ -43,18 +43,16 @@ export default function Layout() {
   const { logout } = useAuth()
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wide ${
-      isActive ? "bg-red-600 text-white" : "text-white/80 hover:text-white hover:bg-white/10"
+    `px-3 py-2 rounded-sm text-sm font-bold uppercase tracking-wide ${
+      isActive ? "bg-white text-brand-dark" : "text-white/80 hover:text-white hover:bg-white/10"
     }`
 
   return (
     <div className="min-h-screen bg-white">
-      <nav className="bg-black">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
+      <nav className="bg-brand-dark border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
-            <span className="text-white font-black text-lg tracking-tight uppercase">
-              ATS Tracker
-            </span>
+            <span className="text-white font-black text-lg tracking-tight uppercase">IHATS</span>
             <NavLink to="/jobs" className={linkClass}>
               Jobs
             </NavLink>
@@ -66,7 +64,7 @@ export default function Layout() {
             <QueueIndicator />
             <button
               onClick={logout}
-              className="text-sm font-bold uppercase tracking-wide text-white/70 hover:text-red-500"
+              className="text-sm font-bold uppercase tracking-wide text-white/70 hover:text-white"
               type="button"
             >
               Log out
@@ -74,7 +72,7 @@ export default function Layout() {
           </div>
         </div>
       </nav>
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-6">
         <Outlet />
       </main>
     </div>

@@ -82,7 +82,7 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
   }
 
   return (
-    <div className="bg-white border-2 border-black rounded-lg p-4 mb-6">
+    <div className="bg-white border border-brand rounded-sm p-4">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-black uppercase tracking-wide text-black">Add job URLs</h2>
         <span className="text-xs text-slate-500">
@@ -178,18 +178,19 @@ function FiltersBar({
   onChange: (filters: JobFilters) => void
 }) {
   return (
-    <div className="flex flex-wrap gap-2 mb-4">
+    <div className="bg-white border border-brand rounded-sm p-4 space-y-2">
+      <h2 className="text-sm font-black uppercase tracking-wide text-black mb-1">Filters</h2>
       <input
         type="search"
         placeholder="Search company or title…"
         value={filters.q ?? ""}
         onChange={(e) => onChange({ ...filters, q: e.target.value })}
-        className={`${INPUT} flex-1 min-w-[180px]`}
+        className={`${INPUT} w-full`}
       />
       <select
         value={filters.application_status ?? ""}
         onChange={(e) => onChange({ ...filters, application_status: e.target.value || undefined })}
-        className={SELECT}
+        className={`${SELECT} w-full`}
       >
         <option value="">All application statuses</option>
         {["saved", "applied", "interviewing", "offer", "rejected", "withdrawn", "closed"].map(
@@ -203,7 +204,7 @@ function FiltersBar({
       <select
         value={filters.role_family ?? ""}
         onChange={(e) => onChange({ ...filters, role_family: e.target.value || undefined })}
-        className={SELECT}
+        className={`${SELECT} w-full`}
       >
         <option value="">All role families</option>
         {["data_analyst", "data_engineer", "ai_engineer", "other"].map((s) => (
@@ -215,7 +216,7 @@ function FiltersBar({
       <select
         value={filters.employment_type ?? ""}
         onChange={(e) => onChange({ ...filters, employment_type: e.target.value || undefined })}
-        className={SELECT}
+        className={`${SELECT} w-full`}
       >
         <option value="">All employment types</option>
         {["full_time", "part_time", "internship", "working_student", "trainee", "contract"].map(
@@ -229,7 +230,7 @@ function FiltersBar({
       <select
         value={filters.language ?? ""}
         onChange={(e) => onChange({ ...filters, language: e.target.value || undefined })}
-        className={SELECT}
+        className={`${SELECT} w-full`}
       >
         <option value="">All languages</option>
         <option value="de">DE</option>
@@ -239,7 +240,7 @@ function FiltersBar({
       <select
         value={filters.processing_status ?? ""}
         onChange={(e) => onChange({ ...filters, processing_status: e.target.value || undefined })}
-        className={SELECT}
+        className={`${SELECT} w-full`}
       >
         <option value="">All processing statuses</option>
         {[
@@ -387,7 +388,7 @@ function JobCard({ job }: { job: JobListItem }) {
   })
 
   return (
-    <div className="bg-white border-2 border-black rounded-lg p-3">
+    <div className="bg-white border border-brand rounded-sm p-3">
       <div className="flex items-start justify-between">
         <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
           {job.company_name ?? "Untitled"}
@@ -421,52 +422,56 @@ export default function JobsPage() {
   })
 
   return (
-    <div>
-      <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
-      <FiltersBar filters={filters} onChange={setFilters} />
+    <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 items-start">
+      <div className="lg:sticky lg:top-6 space-y-4">
+        <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
+        <FiltersBar filters={filters} onChange={setFilters} />
+      </div>
 
-      {query.isLoading && <p className="text-sm text-slate-500">Loading…</p>}
-      {query.isError && <p className="text-sm text-red-600">Could not load jobs.</p>}
+      <div>
+        {query.isLoading && <p className="text-sm text-slate-500">Loading…</p>}
+        {query.isError && <p className="text-sm text-red-600">Could not load jobs.</p>}
 
-      {query.data && query.data.items.length === 0 && (
-        <p className="text-sm text-slate-500">No jobs yet. Add a URL above to get started.</p>
-      )}
+        {query.data && query.data.items.length === 0 && (
+          <p className="text-sm text-slate-500">No jobs yet. Add a URL to get started.</p>
+        )}
 
-      {query.data && query.data.items.length > 0 && (
-        <>
-          <div className="hidden md:block overflow-x-auto bg-white border-2 border-black rounded-lg">
-            <table className="min-w-full text-sm">
-              <thead className="bg-black text-left text-xs font-bold text-white uppercase tracking-wide">
-                <tr>
-                  <th className="px-3 py-2">Company</th>
-                  <th className="px-3 py-2">Title</th>
-                  <th className="px-3 py-2">Role family</th>
-                  <th className="px-3 py-2">Type / seniority</th>
-                  <th className="px-3 py-2">Lang</th>
-                  <th className="px-3 py-2">Location</th>
-                  <th className="px-3 py-2">Application status</th>
-                  <th className="px-3 py-2">Processing</th>
-                  <th className="px-3 py-2">Deadline</th>
-                  <th className="px-3 py-2">Added</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {query.data.items.map((job) => (
-                  <tr key={job.id}>
-                    <JobRow job={job} />
+        {query.data && query.data.items.length > 0 && (
+          <>
+            <div className="hidden md:block overflow-x-auto bg-white border border-brand rounded-sm">
+              <table className="min-w-full text-sm">
+                <thead className="bg-brand text-left text-xs font-bold text-white uppercase tracking-wide">
+                  <tr>
+                    <th className="px-3 py-2">Company</th>
+                    <th className="px-3 py-2">Title</th>
+                    <th className="px-3 py-2">Role family</th>
+                    <th className="px-3 py-2">Type / seniority</th>
+                    <th className="px-3 py-2">Lang</th>
+                    <th className="px-3 py-2">Location</th>
+                    <th className="px-3 py-2">Application status</th>
+                    <th className="px-3 py-2">Processing</th>
+                    <th className="px-3 py-2">Deadline</th>
+                    <th className="px-3 py-2">Added</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {query.data.items.map((job) => (
+                    <tr key={job.id}>
+                      <JobRow job={job} />
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          <div className="md:hidden space-y-3">
-            {query.data.items.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
-        </>
-      )}
+            <div className="md:hidden space-y-3">
+              {query.data.items.map((job) => (
+                <JobCard key={job.id} job={job} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }

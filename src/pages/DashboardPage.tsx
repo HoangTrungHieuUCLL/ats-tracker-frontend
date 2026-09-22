@@ -23,7 +23,7 @@ const CATEGORY_TABS: { value: KeywordCategory | "all"; label: string }[] = [
 
 function KpiCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="bg-white border-2 border-black rounded-lg p-4">
+    <div className="bg-white border border-brand rounded-sm p-4">
       <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">{label}</p>
       <p className="text-xl font-black text-black">{value}</p>
     </div>
@@ -84,27 +84,47 @@ export default function DashboardPage() {
     <div>
       <DashboardFilterBar filters={filters} onChange={setFilters} />
 
-      {summary && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <KpiCard label="Jobs analyzed" value={Object.values(summary.by_application_status).reduce((a, b) => a + b, 0)} />
-          <KpiCard
-            label="Role family split"
-            value={Object.entries(summary.by_role_family)
-              .map(([k, v]) => `${k}: ${v}`)
-              .join(", ") || "—"}
-          />
-          <KpiCard
-            label="DE vs EN"
-            value={langTotal > 0 ? `${Math.round((deCount / langTotal) * 100)}% DE` : "—"}
-          />
-          <KpiCard
-            label="By application status"
-            value={Object.entries(summary.by_application_status)
-              .map(([k, v]) => `${k}: ${v}`)
-              .join(", ") || "—"}
-          />
-        </div>
-      )}
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 mb-6 items-start">
+        {summary && (
+          <div className="grid grid-cols-2 gap-3">
+            <KpiCard label="Jobs analyzed" value={Object.values(summary.by_application_status).reduce((a, b) => a + b, 0)} />
+            <KpiCard
+              label="Role family split"
+              value={Object.entries(summary.by_role_family)
+                .map(([k, v]) => `${k}: ${v}`)
+                .join(", ") || "—"}
+            />
+            <KpiCard
+              label="DE vs EN"
+              value={langTotal > 0 ? `${Math.round((deCount / langTotal) * 100)}% DE` : "—"}
+            />
+            <KpiCard
+              label="By application status"
+              value={Object.entries(summary.by_application_status)
+                .map(([k, v]) => `${k}: ${v}`)
+                .join(", ") || "—"}
+            />
+          </div>
+        )}
+
+        {keywordsQuery.data && (
+          <div className="bg-white border border-brand rounded-sm p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-black uppercase tracking-wide text-black">
+                Top keywords by share of jobs
+              </h2>
+              <p className="text-xs text-slate-500">
+                n = {nJobs} jobs{nJobs < 30 && " · small sample, percentages are rough"}
+              </p>
+            </div>
+            {keywordsQuery.data.items.length > 0 ? (
+              <TopKeywordsChart items={keywordsQuery.data.items} nJobs={nJobs} />
+            ) : (
+              <p className="text-sm text-slate-500">No keywords match these filters yet.</p>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
         {CATEGORY_TABS.map((tab) => (
@@ -112,10 +132,10 @@ export default function DashboardPage() {
             key={tab.value}
             type="button"
             onClick={() => setCategory(tab.value)}
-            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wide rounded-full border-2 ${
+            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wide rounded-full border ${
               category === tab.value
-                ? "bg-red-600 text-white border-red-600"
-                : "border-black text-black hover:bg-black hover:text-white"
+                ? "bg-brand text-white border-brand"
+                : "border-brand text-brand hover:bg-brand hover:text-white"
             }`}
           >
             {tab.label}
@@ -127,24 +147,6 @@ export default function DashboardPage() {
 
       {keywordsQuery.data && (
         <>
-          <p className="text-sm text-slate-600 mb-2">n = {nJobs} jobs</p>
-          {nJobs < 30 && (
-            <p className="text-xs text-amber-700 mb-3">
-              Small sample: percentages are rough.
-            </p>
-          )}
-
-          <div className="bg-white border-2 border-black rounded-lg p-4 mb-6">
-            <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">
-              Top keywords by share of jobs
-            </h2>
-            {keywordsQuery.data.items.length > 0 ? (
-              <TopKeywordsChart items={keywordsQuery.data.items} nJobs={nJobs} />
-            ) : (
-              <p className="text-sm text-slate-500">No keywords match these filters yet.</p>
-            )}
-          </div>
-
           <KeywordTable
             items={keywordsQuery.data.items}
             onSelect={setSelected}
@@ -208,7 +210,7 @@ function RenamePrompt({
   const [value, setValue] = useState(initial)
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5 border-2 border-black">
+      <div className="bg-white shadow-lg max-w-sm w-full p-5 border border-brand-dark rounded-sm">
         <h2 className="text-base font-black uppercase tracking-wide text-black mb-3">Rename keyword</h2>
         <input
           value={value}
@@ -247,7 +249,7 @@ function CategoryPrompt({
   const [value, setValue] = useState<KeywordCategory>(initial)
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-5 border-2 border-black">
+      <div className="bg-white shadow-lg max-w-sm w-full p-5 border border-brand-dark rounded-sm">
         <h2 className="text-base font-black uppercase tracking-wide text-black mb-3">Change category</h2>
         <select
           value={value}

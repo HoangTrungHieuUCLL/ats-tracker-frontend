@@ -13,9 +13,9 @@ const LABELS: Record<ProcessingStatus, string> = {
 
 const STYLES: Record<ProcessingStatus, string> = {
   queued: "bg-slate-100 text-slate-700",
-  fetching: "bg-black/10 text-black",
-  extracting: "bg-black/10 text-black",
-  analyzing: "bg-black/10 text-black",
+  fetching: "bg-blue-100 text-brand-dark",
+  extracting: "bg-blue-100 text-brand-dark",
+  analyzing: "bg-blue-100 text-brand-dark",
   done: "bg-green-100 text-green-700",
   needs_manual_text: "bg-amber-100 text-amber-800",
   quota_wait: "bg-amber-100 text-amber-800",

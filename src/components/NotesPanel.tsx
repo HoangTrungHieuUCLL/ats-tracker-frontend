@@ -23,7 +23,7 @@ function NoteItem({ jobId, note }: { jobId: string; note: JobNote }) {
   })
 
   return (
-    <div className="border-2 border-black rounded-md p-2">
+    <div className="border border-brand rounded-sm p-2">
       <p className="text-xs text-slate-400 mb-1">
         {new Date(note.created_at).toLocaleString()}
       </p>
