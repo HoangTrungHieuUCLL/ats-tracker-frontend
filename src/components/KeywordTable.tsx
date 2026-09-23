@@ -47,7 +47,7 @@ export default function KeywordTable({
 
   return (
     <div className="bg-white border border-brand rounded-sm overflow-hidden">
-      <div className="overflow-auto max-h-[520px]">
+      <div className="overflow-auto max-h-[380px]">
         <table className="min-w-full text-sm">
           <thead className="sticky top-0 z-10 bg-brand text-left text-xs font-bold text-white uppercase tracking-wide">
             <tr>
