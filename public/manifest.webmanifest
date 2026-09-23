@@ -5,7 +5,7 @@
   "start_url": "/jobs",
   "display": "standalone",
   "background_color": "#2541D6",
-  "theme_color": "#2541D6",
+  "theme_color": "#152A7A",
   "icons": [
     {
       "src": "/icons/icon-192.png",
