@@ -160,9 +160,9 @@ export default function DashboardPage() {
       <div className="flex gap-2 mb-4 border-b border-brand">
         {(
           [
-            { value: "chart", label: "Chart" },
-            { value: "list", label: "Keyword list" },
             { value: "pipeline", label: "Job situation" },
+            { value: "list", label: "ATS keywords" },
+            { value: "chart", label: "Top keywords by share of jobs" },
           ] as const
         ).map((tab) => (
           <button
