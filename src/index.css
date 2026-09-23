@@ -11,3 +11,32 @@ body {
     Consolas,
     monospace;
 }
+
+/*
+ * Installed (home screen) app: the status bar is translucent and the page is
+ * drawn underneath it. Push content below the notch/status bar and paint that
+ * strip solid brand-dark so scrolling content never shows through blurred.
+ */
+html {
+  background-color: #152a7a;
+}
+
+body {
+  min-height: 100vh;
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  background-color: #ffffff;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top);
+  background-color: #152a7a;
+  z-index: 9999;
+  pointer-events: none;
+}
