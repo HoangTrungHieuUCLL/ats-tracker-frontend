@@ -57,6 +57,10 @@ export function reanalyzeJob(id: string): Promise<JobDetail> {
   return api.post<JobDetail>(`/jobs/${id}/reanalyze`)
 }
 
+export function analyzeJob(id: string): Promise<JobDetail> {
+  return api.post<JobDetail>(`/jobs/${id}/analyze`)
+}
+
 export function addNote(jobId: string, body: string): Promise<JobNote> {
   return api.post<JobNote>(`/jobs/${jobId}/notes`, { body })
 }
@@ -69,7 +73,13 @@ export function deleteNote(noteId: string): Promise<void> {
   return api.delete<void>(`/notes/${noteId}`)
 }
 
-const NON_FINAL_STATUSES = new Set(["queued", "fetching", "extracting", "analyzing", "quota_wait"])
+export const NON_FINAL_STATUSES = new Set([
+  "queued",
+  "fetching",
+  "extracting",
+  "analyzing",
+  "quota_wait",
+])
 
 export function hasNonFinalJobs(response: JobListResponse | undefined): boolean {
   if (!response) return false
