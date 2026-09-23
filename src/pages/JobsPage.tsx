@@ -178,86 +178,92 @@ function FiltersBar({
   onChange: (filters: JobFilters) => void
 }) {
   return (
-    <div className="bg-white border border-brand rounded-sm p-4 space-y-2">
-      <h2 className="text-sm font-black uppercase tracking-wide text-black mb-1">Filters</h2>
-      <input
-        type="search"
-        placeholder="Search company or title…"
-        value={filters.q ?? ""}
-        onChange={(e) => onChange({ ...filters, q: e.target.value })}
-        className={`${INPUT} w-full`}
-      />
-      <select
-        value={filters.application_status ?? ""}
-        onChange={(e) => onChange({ ...filters, application_status: e.target.value || undefined })}
-        className={`${SELECT} w-full`}
-      >
-        <option value="">All application statuses</option>
-        {["saved", "applied", "interviewing", "offer", "rejected", "withdrawn", "closed"].map(
-          (s) => (
+    <div className="bg-white border border-brand rounded-sm p-4">
+      <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Filters</h2>
+      <div className="flex flex-wrap gap-2">
+        <input
+          type="search"
+          placeholder="Search company or title…"
+          value={filters.q ?? ""}
+          onChange={(e) => onChange({ ...filters, q: e.target.value })}
+          className={`${INPUT} flex-1 min-w-[180px]`}
+        />
+        <select
+          value={filters.application_status ?? ""}
+          onChange={(e) =>
+            onChange({ ...filters, application_status: e.target.value || undefined })
+          }
+          className={SELECT}
+        >
+          <option value="">All application statuses</option>
+          {["saved", "applied", "interviewing", "offer", "rejected", "withdrawn", "closed"].map(
+            (s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ),
+          )}
+        </select>
+        <select
+          value={filters.role_family ?? ""}
+          onChange={(e) => onChange({ ...filters, role_family: e.target.value || undefined })}
+          className={SELECT}
+        >
+          <option value="">All role families</option>
+          {["data_analyst", "data_engineer", "ai_engineer", "other"].map((s) => (
             <option key={s} value={s}>
               {s}
             </option>
-          ),
-        )}
-      </select>
-      <select
-        value={filters.role_family ?? ""}
-        onChange={(e) => onChange({ ...filters, role_family: e.target.value || undefined })}
-        className={`${SELECT} w-full`}
-      >
-        <option value="">All role families</option>
-        {["data_analyst", "data_engineer", "ai_engineer", "other"].map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
-      <select
-        value={filters.employment_type ?? ""}
-        onChange={(e) => onChange({ ...filters, employment_type: e.target.value || undefined })}
-        className={`${SELECT} w-full`}
-      >
-        <option value="">All employment types</option>
-        {["full_time", "part_time", "internship", "working_student", "trainee", "contract"].map(
-          (s) => (
+          ))}
+        </select>
+        <select
+          value={filters.employment_type ?? ""}
+          onChange={(e) => onChange({ ...filters, employment_type: e.target.value || undefined })}
+          className={SELECT}
+        >
+          <option value="">All employment types</option>
+          {["full_time", "part_time", "internship", "working_student", "trainee", "contract"].map(
+            (s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ),
+          )}
+        </select>
+        <select
+          value={filters.language ?? ""}
+          onChange={(e) => onChange({ ...filters, language: e.target.value || undefined })}
+          className={SELECT}
+        >
+          <option value="">All languages</option>
+          <option value="de">DE</option>
+          <option value="en">EN</option>
+          <option value="other">Other</option>
+        </select>
+        <select
+          value={filters.processing_status ?? ""}
+          onChange={(e) =>
+            onChange({ ...filters, processing_status: e.target.value || undefined })
+          }
+          className={SELECT}
+        >
+          <option value="">All processing statuses</option>
+          {[
+            "queued",
+            "fetching",
+            "extracting",
+            "analyzing",
+            "done",
+            "needs_manual_text",
+            "quota_wait",
+            "failed",
+          ].map((s) => (
             <option key={s} value={s}>
               {s}
             </option>
-          ),
-        )}
-      </select>
-      <select
-        value={filters.language ?? ""}
-        onChange={(e) => onChange({ ...filters, language: e.target.value || undefined })}
-        className={`${SELECT} w-full`}
-      >
-        <option value="">All languages</option>
-        <option value="de">DE</option>
-        <option value="en">EN</option>
-        <option value="other">Other</option>
-      </select>
-      <select
-        value={filters.processing_status ?? ""}
-        onChange={(e) => onChange({ ...filters, processing_status: e.target.value || undefined })}
-        className={`${SELECT} w-full`}
-      >
-        <option value="">All processing statuses</option>
-        {[
-          "queued",
-          "fetching",
-          "extracting",
-          "analyzing",
-          "done",
-          "needs_manual_text",
-          "quota_wait",
-          "failed",
-        ].map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
+          ))}
+        </select>
+      </div>
     </div>
   )
 }
@@ -349,7 +355,16 @@ function JobRow({ job }: { job: JobListItem }) {
       <td className="px-2 py-1.5">
         <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
           {job.company_name ?? "—"}
-        </Link>
+        </Link>{" "}
+        <a
+          href={job.source_url}
+          target="_blank"
+          rel="noreferrer"
+          title="Visit original posting"
+          className="text-brand hover:text-brand-dark"
+        >
+          ↗
+        </a>
       </td>
       <td className="px-2 py-1.5 max-w-[180px] truncate" title={job.job_title ?? undefined}>
         {job.job_title ?? "—"}
@@ -395,9 +410,20 @@ function JobCard({ job }: { job: JobListItem }) {
   return (
     <div className="bg-white border border-brand rounded-sm p-3">
       <div className="flex items-start justify-between">
-        <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
-          {job.company_name ?? "Untitled"}
-        </Link>
+        <div>
+          <Link to={`/jobs/${job.id}`} className="font-medium text-black hover:underline">
+            {job.company_name ?? "Untitled"}
+          </Link>{" "}
+          <a
+            href={job.source_url}
+            target="_blank"
+            rel="noreferrer"
+            title="Visit original posting"
+            className="text-brand hover:text-brand-dark"
+          >
+            ↗
+          </a>
+        </div>
         <ProcessingStatusChip status={job.processing_status} />
       </div>
       <p className="text-sm text-slate-600">{job.job_title ?? "—"}</p>
@@ -427,11 +453,9 @@ export default function JobsPage() {
   })
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4 items-start">
-      <div className="lg:sticky lg:top-6 space-y-4">
-        <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
-        <FiltersBar filters={filters} onChange={setFilters} />
-      </div>
+    <div className="space-y-4">
+      <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
+      <FiltersBar filters={filters} onChange={setFilters} />
 
       <div>
         {query.isLoading && <p className="text-sm text-slate-500">Loading…</p>}

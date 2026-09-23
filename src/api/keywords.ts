@@ -18,3 +18,7 @@ export function mergeKeywords(sourceId: string, targetId: string): Promise<unkno
     target_keyword_id: targetId,
   })
 }
+
+export function deleteKeyword(keywordId: string): Promise<void> {
+  return api.delete<void>(`/keywords/${keywordId}`)
+}
