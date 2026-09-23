@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import type { KeywordCategory, KeywordDashboardItem } from "../api/types"
-import { CHIP_BUTTON } from "../styles/ui"
+import { CHIP_BUTTON, CHIP_BUTTON_DANGER } from "../styles/ui"
 
 const CATEGORY_LABELS: Record<KeywordCategory, string> = {
   hard_skill: "Hard skill",
@@ -31,12 +31,14 @@ export default function KeywordTable({
   onRename,
   onChangeCategory,
   onMerge,
+  onDelete,
 }: {
   items: KeywordDashboardItem[]
   onSelect: (item: KeywordDashboardItem) => void
   onRename: (item: KeywordDashboardItem) => void
   onChangeCategory: (item: KeywordDashboardItem) => void
   onMerge: (item: KeywordDashboardItem) => void
+  onDelete: (item: KeywordDashboardItem) => void
 }) {
   const sortedItems = useMemo(
     () => [...items].sort((a, b) => a.canonical_name.localeCompare(b.canonical_name)),
@@ -44,79 +46,90 @@ export default function KeywordTable({
   )
 
   return (
-    <div className="overflow-x-auto bg-white border border-brand rounded-sm">
-      <table className="min-w-full text-sm">
-        <thead className="bg-brand text-left text-xs font-bold text-white uppercase tracking-wide">
-          <tr>
-            <th className="px-3 py-2">Keyword</th>
-            <th className="px-3 py-2">Category</th>
-            <th className="px-3 py-2">Share</th>
-            <th className="px-3 py-2">Must-have %</th>
-            <th className="px-3 py-2">Exact phrases</th>
-            <th className="px-3 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100">
-          {sortedItems.map((item) => {
-            const groups = groupSurfaceForms(item)
-            const mustHavePct = Math.round((item.must_have_count / Math.max(item.job_count, 1)) * 100)
-            return (
-              <tr key={item.keyword_id} className="hover:bg-slate-50">
-                <td
-                  className="px-3 py-2 font-medium text-black cursor-pointer"
-                  onClick={() => onSelect(item)}
-                >
-                  {item.canonical_name}
-                </td>
-                <td className="px-3 py-2 text-slate-500">{CATEGORY_LABELS[item.category]}</td>
-                <td className="px-3 py-2 text-slate-700">{Math.round(item.share * 100)}%</td>
-                <td className="px-3 py-2 text-slate-700">{mustHavePct}%</td>
-                <td className="px-3 py-2">
-                  {(["de", "en", "other"] as const).map(
-                    (lang) =>
-                      groups[lang].length > 0 && (
-                        <div key={lang} className="mb-1">
-                          <span className="text-xs text-slate-400 uppercase mr-1">{lang}</span>
-                          {groups[lang].map((sf) => (
-                            <span
-                              key={sf.text}
-                              className="inline-flex items-center gap-1 mr-2 text-xs text-slate-600"
-                            >
-                              "{sf.text}" ({sf.count})
-                              <button
-                                type="button"
-                                onClick={() => copyToClipboard(sf.text)}
-                                title="Copy"
-                                className="text-slate-400 hover:text-slate-700"
-                              >
-                                ⧉
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-                      ),
-                  )}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap space-x-1.5">
-                  <button type="button" onClick={() => onRename(item)} className={CHIP_BUTTON}>
-                    Rename
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onChangeCategory(item)}
-                    className={CHIP_BUTTON}
+    <div className="bg-white border border-brand rounded-sm overflow-hidden">
+      <div className="overflow-auto max-h-[520px]">
+        <table className="min-w-full text-sm">
+          <thead className="sticky top-0 z-10 bg-brand text-left text-xs font-bold text-white uppercase tracking-wide">
+            <tr>
+              <th className="px-3 py-2">Keyword</th>
+              <th className="px-3 py-2">Category</th>
+              <th className="px-3 py-2">Share</th>
+              <th className="px-3 py-2">Must-have %</th>
+              <th className="px-3 py-2">Exact phrases</th>
+              <th className="px-3 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {sortedItems.map((item) => {
+              const groups = groupSurfaceForms(item)
+              const mustHavePct = Math.round(
+                (item.must_have_count / Math.max(item.job_count, 1)) * 100,
+              )
+              return (
+                <tr key={item.keyword_id} className="hover:bg-slate-50">
+                  <td
+                    className="px-3 py-2 font-medium text-black cursor-pointer"
+                    onClick={() => onSelect(item)}
                   >
-                    Category
-                  </button>
-                  <button type="button" onClick={() => onMerge(item)} className={CHIP_BUTTON}>
-                    Merge
-                  </button>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+                    {item.canonical_name}
+                  </td>
+                  <td className="px-3 py-2 text-slate-500">{CATEGORY_LABELS[item.category]}</td>
+                  <td className="px-3 py-2 text-slate-700">{Math.round(item.share * 100)}%</td>
+                  <td className="px-3 py-2 text-slate-700">{mustHavePct}%</td>
+                  <td className="px-3 py-2">
+                    {(["de", "en", "other"] as const).map(
+                      (lang) =>
+                        groups[lang].length > 0 && (
+                          <div key={lang} className="mb-1">
+                            <span className="text-xs text-slate-400 uppercase mr-1">{lang}</span>
+                            {groups[lang].map((sf) => (
+                              <span
+                                key={sf.text}
+                                className="inline-flex items-center gap-1 mr-2 text-xs text-slate-600"
+                              >
+                                "{sf.text}" ({sf.count})
+                                <button
+                                  type="button"
+                                  onClick={() => copyToClipboard(sf.text)}
+                                  title="Copy"
+                                  className="text-slate-400 hover:text-slate-700"
+                                >
+                                  ⧉
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        ),
+                    )}
+                  </td>
+                  <td className="px-3 py-2 whitespace-nowrap space-x-1.5">
+                    <button type="button" onClick={() => onRename(item)} className={CHIP_BUTTON}>
+                      Rename
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onChangeCategory(item)}
+                      className={CHIP_BUTTON}
+                    >
+                      Category
+                    </button>
+                    <button type="button" onClick={() => onMerge(item)} className={CHIP_BUTTON}>
+                      Merge
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(item)}
+                      className={CHIP_BUTTON_DANGER}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

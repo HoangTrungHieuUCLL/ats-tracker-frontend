@@ -6,7 +6,7 @@ import KeywordTable from "../components/KeywordTable"
 import MergeKeywordModal from "../components/MergeKeywordModal"
 import TopKeywordsChart from "../components/TopKeywordsChart"
 import { getDashboardKeywords, getDashboardSummary, type DashboardKeywordFilters } from "../api/dashboard"
-import { mergeKeywords, updateKeyword } from "../api/keywords"
+import { deleteKeyword, mergeKeywords, updateKeyword } from "../api/keywords"
 import type { KeywordCategory, KeywordDashboardItem } from "../api/types"
 import { BTN_PRIMARY, BTN_SECONDARY, INPUT, SELECT } from "../styles/ui"
 
@@ -94,6 +94,16 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["dashboard-keywords"] })
     },
   })
+  const deleteMutation = useMutation({
+    mutationFn: (keywordId: string) => deleteKeyword(keywordId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["dashboard-keywords"] }),
+  })
+
+  function handleDelete(item: KeywordDashboardItem) {
+    if (confirm(`Delete "${item.canonical_name}" from every job that has it?`)) {
+      deleteMutation.mutate(item.keyword_id)
+    }
+  }
 
   const nJobs = keywordsQuery.data?.n_jobs ?? 0
   const summary = summaryQuery.data
@@ -195,6 +205,7 @@ export default function DashboardPage() {
           onRename={setRenaming}
           onChangeCategory={setRecategorizing}
           onMerge={setMerging}
+          onDelete={handleDelete}
         />
       )}
 

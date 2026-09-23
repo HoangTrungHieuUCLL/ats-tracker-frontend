@@ -33,9 +33,23 @@ export default function JobsDrawer({
         <ul className="space-y-2">
           {query.data?.map((job) => (
             <li key={job.id} className="border border-brand rounded-sm p-2">
-              <Link to={`/jobs/${job.id}`} className="text-sm font-medium text-black hover:underline">
-                {job.company_name ?? "Untitled"}
-              </Link>
+              <div className="flex items-start justify-between gap-2">
+                <Link
+                  to={`/jobs/${job.id}`}
+                  className="text-sm font-medium text-black hover:underline"
+                >
+                  {job.company_name ?? "Untitled"}
+                </Link>
+                <a
+                  href={job.source_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Visit original posting"
+                  className="text-brand hover:text-brand-dark shrink-0"
+                >
+                  ↗
+                </a>
+              </div>
               <p className="text-xs text-slate-500">{job.job_title ?? "—"}</p>
             </li>
           ))}
