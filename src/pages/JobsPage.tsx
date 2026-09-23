@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import ApplicationStatusSelect from "../components/ApplicationStatusSelect"
 import ManualTextModal from "../components/ManualTextModal"
 import ProcessingStatusChip from "../components/ProcessingStatusChip"
+import ReviewJobsModal from "../components/ReviewJobsModal"
 import {
   hasNonFinalJobs,
   listJobs,
@@ -46,6 +47,7 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
     { id: nextRowId(), value: "" },
   ])
   const [results, setResults] = useState<BatchResultItem[] | null>(null)
+  const [progressJobIds, setProgressJobIds] = useState<string[] | null>(null)
 
   const filledValues = rows.map((r) => r.value.trim()).filter(Boolean)
   const uniqueValues = Array.from(new Set(filledValues))
@@ -59,6 +61,10 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
       const accepted = new Set(data.filter((r) => r.result === "accepted").map((r) => r.url))
       const remaining = rows.filter((r) => !accepted.has(r.value.trim()))
       setRows(remaining.length > 0 ? remaining : [{ id: nextRowId(), value: "" }])
+      const acceptedJobIds = data
+        .filter((r) => r.result === "accepted" && r.job_id)
+        .map((r) => r.job_id as string)
+      if (acceptedJobIds.length > 0) setProgressJobIds(acceptedJobIds)
       onAccepted()
     },
   })
@@ -166,6 +172,9 @@ function AddUrlsPanel({ onAccepted }: { onAccepted: () => void }) {
           ))}
         </ul>
       )}
+      {progressJobIds && (
+        <ReviewJobsModal jobIds={progressJobIds} onClose={() => setProgressJobIds(null)} />
+      )}
     </div>
   )
 }
@@ -254,6 +263,7 @@ function FiltersBar({
             "extracting",
             "analyzing",
             "done",
+            "needs_review",
             "needs_manual_text",
             "quota_wait",
             "failed",
@@ -271,6 +281,7 @@ function FiltersBar({
 function JobRowActions({ job }: { job: JobListItem }) {
   const queryClient = useQueryClient()
   const [modalOpen, setModalOpen] = useState(false)
+  const [reviewing, setReviewing] = useState(false)
 
   const retryMutation = useMutation({
     mutationFn: () => retryJob(job.id),
@@ -307,6 +318,19 @@ function JobRowActions({ job }: { job: JobListItem }) {
             onSubmit={(text) => manualTextMutation.mutate(text)}
             onClose={() => setModalOpen(false)}
           />
+        )}
+      </>
+    )
+  }
+
+  if (job.processing_status === "needs_review") {
+    return (
+      <>
+        <button type="button" onClick={() => setReviewing(true)} className={`text-xs ${BTN_TEXT}`}>
+          Review
+        </button>
+        {reviewing && (
+          <ReviewJobsModal jobIds={[job.id]} onClose={() => setReviewing(false)} />
         )}
       </>
     )

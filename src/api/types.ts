@@ -4,6 +4,7 @@ export type ProcessingStatus =
   | "extracting"
   | "analyzing"
   | "done"
+  | "needs_review"
   | "needs_manual_text"
   | "quota_wait"
   | "failed"
