@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import DashboardFilterBar from "../components/DashboardFilterBar"
+import JobPipelineCharts from "../components/JobPipelineCharts"
 import JobsDrawer from "../components/JobsDrawer"
 import KeywordTable from "../components/KeywordTable"
 import MergeKeywordModal from "../components/MergeKeywordModal"
@@ -54,7 +55,7 @@ function KpiCard({
 export default function DashboardPage() {
   const [filters, setFilters] = useState<DashboardKeywordFilters>({ limit: 25 })
   const [category, setCategory] = useState<KeywordCategory | "all">("all")
-  const [view, setView] = useState<"chart" | "list">("chart")
+  const [view, setView] = useState<"chart" | "list" | "pipeline">("chart")
   const [selected, setSelected] = useState<KeywordDashboardItem | null>(null)
   const [renaming, setRenaming] = useState<KeywordDashboardItem | null>(null)
   const [recategorizing, setRecategorizing] = useState<KeywordDashboardItem | null>(null)
@@ -161,6 +162,7 @@ export default function DashboardPage() {
           [
             { value: "chart", label: "Chart" },
             { value: "list", label: "Keyword list" },
+            { value: "pipeline", label: "Job situation" },
           ] as const
         ).map((tab) => (
           <button
@@ -197,6 +199,8 @@ export default function DashboardPage() {
           )}
         </div>
       )}
+
+      {summary && view === "pipeline" && <JobPipelineCharts summary={summary} />}
 
       {keywordsQuery.data && view === "list" && (
         <KeywordTable

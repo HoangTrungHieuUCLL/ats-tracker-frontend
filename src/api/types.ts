@@ -178,4 +178,6 @@ export interface DashboardSummaryResponse {
   by_language: Record<string, number>
   by_employment_type: Record<string, number>
   jobs_per_week: { week: string; count: number }[]
+  applications_per_week: { week: string; count: number }[]
+  missed_deadline_count: number
 }
