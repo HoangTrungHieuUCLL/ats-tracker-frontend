@@ -89,6 +89,17 @@ export default function DashboardFilterBar({
         />
         Include unverified
       </label>
+      <select
+        value={filters.limit ?? 200}
+        onChange={(e) => onChange({ ...filters, limit: Number(e.target.value) })}
+        className={SELECT}
+      >
+        {[25, 50, 100, 200].map((n) => (
+          <option key={n} value={n}>
+            Top {n} keywords
+          </option>
+        ))}
+      </select>
     </div>
   )
 }
