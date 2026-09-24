@@ -80,15 +80,6 @@ export default function DashboardFilterBar({
         <option value="">All importance</option>
         <option value="must_have">Must-have only</option>
       </select>
-      <label className="flex items-center gap-1.5 text-sm font-medium text-black">
-        <input
-          type="checkbox"
-          checked={filters.include_unverified ?? false}
-          onChange={(e) => onChange({ ...filters, include_unverified: e.target.checked })}
-          className="accent-red-600 w-4 h-4"
-        />
-        Include unverified
-      </label>
       <select
         value={filters.limit ?? 200}
         onChange={(e) => onChange({ ...filters, limit: Number(e.target.value) })}

@@ -278,6 +278,67 @@ function FiltersBar({
   )
 }
 
+const PRIORITY_OPTIONS = [1, 2, 3, 4, 5]
+
+function PrioritySelect({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: number | null
+  onChange: (value: number | null) => void
+  disabled?: boolean
+}) {
+  return (
+    <select
+      value={value ?? ""}
+      disabled={disabled}
+      onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+      className={SELECT}
+    >
+      <option value="">No priority</option>
+      {PRIORITY_OPTIONS.map((p) => (
+        <option key={p} value={p}>
+          P{p}
+        </option>
+      ))}
+    </select>
+  )
+}
+
+function SortableHeader({
+  label,
+  sortKey,
+  filters,
+  onChange,
+}: {
+  label: string
+  sortKey: string
+  filters: JobFilters
+  onChange: (filters: JobFilters) => void
+}) {
+  const active = filters.sort_by === sortKey
+  const dir = active ? filters.sort_dir : undefined
+  return (
+    <th className="px-2 py-2">
+      <button
+        type="button"
+        onClick={() =>
+          onChange({
+            ...filters,
+            sort_by: sortKey,
+            sort_dir: active && dir === "asc" ? "desc" : "asc",
+          })
+        }
+        className="flex items-center gap-1 uppercase tracking-wide"
+      >
+        {label}
+        <span className="text-[10px]">{active ? (dir === "asc" ? "▲" : "▼") : ""}</span>
+      </button>
+    </th>
+  )
+}
+
 function JobRowActions({ job }: { job: JobListItem }) {
   const queryClient = useQueryClient()
   const [modalOpen, setModalOpen] = useState(false)
@@ -373,6 +434,10 @@ function JobRow({ job }: { job: JobListItem }) {
       updateJob(job.id, { application_status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["jobs"] }),
   })
+  const priorityMutation = useMutation({
+    mutationFn: (priority: number | null) => updateJob(job.id, { priority }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["jobs"] }),
+  })
 
   return (
     <>
@@ -410,6 +475,13 @@ function JobRow({ job }: { job: JobListItem }) {
         />
       </td>
       <td className="px-2 py-1.5">
+        <PrioritySelect
+          value={job.priority}
+          disabled={priorityMutation.isPending}
+          onChange={(value) => priorityMutation.mutate(value)}
+        />
+      </td>
+      <td className="px-2 py-1.5">
         <ProcessingStatusChip status={job.processing_status} />
         <div className="mt-1">
           <JobRowActions job={job} />
@@ -428,6 +500,10 @@ function JobCard({ job }: { job: JobListItem }) {
   const statusMutation = useMutation({
     mutationFn: (application_status: ApplicationStatus) =>
       updateJob(job.id, { application_status }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["jobs"] }),
+  })
+  const priorityMutation = useMutation({
+    mutationFn: (priority: number | null) => updateJob(job.id, { priority }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["jobs"] }),
   })
 
@@ -454,11 +530,16 @@ function JobCard({ job }: { job: JobListItem }) {
       <p className="text-xs text-slate-500 mt-1">
         {job.role_family ?? "—"} · {job.employment_type ?? "—"} · {job.location ?? "—"}
       </p>
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-between gap-2">
         <ApplicationStatusSelect
           value={job.application_status}
           disabled={statusMutation.isPending}
           onChange={(value) => statusMutation.mutate(value)}
+        />
+        <PrioritySelect
+          value={job.priority}
+          disabled={priorityMutation.isPending}
+          onChange={(value) => priorityMutation.mutate(value)}
         />
         <JobRowActions job={job} />
       </div>
@@ -495,13 +576,14 @@ export default function JobsPage() {
               <table className="min-w-full text-sm">
                 <thead className="bg-brand text-left text-xs font-bold text-white uppercase tracking-wide">
                   <tr>
-                    <th className="px-2 py-2">Company</th>
-                    <th className="px-2 py-2">Title</th>
+                    <SortableHeader label="Company" sortKey="company_name" filters={filters} onChange={setFilters} />
+                    <SortableHeader label="Title" sortKey="job_title" filters={filters} onChange={setFilters} />
                     <th className="px-2 py-2">Role</th>
                     <th className="px-2 py-2">Location</th>
                     <th className="px-2 py-2">Status</th>
+                    <SortableHeader label="Priority" sortKey="priority" filters={filters} onChange={setFilters} />
                     <th className="px-2 py-2">Processing</th>
-                    <th className="px-2 py-2">Dates</th>
+                    <SortableHeader label="Dates" sortKey="created_at" filters={filters} onChange={setFilters} />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">

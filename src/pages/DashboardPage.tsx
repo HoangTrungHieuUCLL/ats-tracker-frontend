@@ -55,7 +55,7 @@ function KpiCard({
 export default function DashboardPage() {
   const [filters, setFilters] = useState<DashboardKeywordFilters>({ limit: 200 })
   const [category, setCategory] = useState<KeywordCategory | "all">("all")
-  const [view, setView] = useState<"chart" | "list" | "pipeline">("chart")
+  const [view, setView] = useState<"chart" | "list" | "pipeline">("pipeline")
   const [selected, setSelected] = useState<KeywordDashboardItem | null>(null)
   const [renaming, setRenaming] = useState<KeywordDashboardItem | null>(null)
   const [recategorizing, setRecategorizing] = useState<KeywordDashboardItem | null>(null)

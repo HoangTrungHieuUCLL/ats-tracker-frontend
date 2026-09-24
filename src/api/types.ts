@@ -58,6 +58,7 @@ export interface JobListItem {
   language: Language | null
   location: string | null
   application_status: ApplicationStatus
+  priority: number | null
   processing_status: ProcessingStatus
   processing_error: string | null
   next_attempt_at: string | null
@@ -118,6 +119,7 @@ export interface JobDetail {
   posted_date: string | null
   summary: string | null
   application_status: ApplicationStatus
+  priority: number | null
   interview_round: number | null
   manually_edited_fields: string[]
   llm_model: string | null
@@ -132,6 +134,7 @@ export interface JobDetail {
 
 export interface JobUpdatePayload {
   application_status?: ApplicationStatus
+  priority?: number | null
   interview_round?: number | null
   company_name?: string | null
   job_title?: string | null

@@ -9,7 +9,6 @@ export interface DashboardKeywordFilters {
   application_status?: string
   importance?: string
   category?: string
-  include_unverified?: boolean
   limit?: number
 }
 
