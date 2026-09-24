@@ -189,20 +189,20 @@ function FiltersBar({
   return (
     <div className="bg-white border border-brand rounded-sm p-4">
       <h2 className="text-sm font-black uppercase tracking-wide text-black mb-3">Filters</h2>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <input
           type="search"
           placeholder="Search company or title…"
           value={filters.q ?? ""}
           onChange={(e) => onChange({ ...filters, q: e.target.value })}
-          className={`${INPUT} flex-1 min-w-[180px]`}
+          className={`${INPUT} col-span-2 w-full`}
         />
         <select
           value={filters.application_status ?? ""}
           onChange={(e) =>
             onChange({ ...filters, application_status: e.target.value || undefined })
           }
-          className={SELECT}
+          className={`${SELECT} col-span-1 w-full`}
         >
           <option value="">All application statuses</option>
           {["saved", "applied", "interviewing", "offer", "rejected", "withdrawn", "closed"].map(
@@ -216,7 +216,7 @@ function FiltersBar({
         <select
           value={filters.role_family ?? ""}
           onChange={(e) => onChange({ ...filters, role_family: e.target.value || undefined })}
-          className={SELECT}
+          className={`${SELECT} col-span-1 w-full`}
         >
           <option value="">All role families</option>
           {["data_analyst", "data_engineer", "ai_engineer", "other"].map((s) => (
@@ -228,7 +228,7 @@ function FiltersBar({
         <select
           value={filters.employment_type ?? ""}
           onChange={(e) => onChange({ ...filters, employment_type: e.target.value || undefined })}
-          className={SELECT}
+          className={`${SELECT} col-span-1 w-full`}
         >
           <option value="">All employment types</option>
           {["full_time", "part_time", "internship", "working_student", "trainee", "contract"].map(
@@ -242,7 +242,7 @@ function FiltersBar({
         <select
           value={filters.language ?? ""}
           onChange={(e) => onChange({ ...filters, language: e.target.value || undefined })}
-          className={SELECT}
+          className={`${SELECT} col-span-1 w-full`}
         >
           <option value="">All languages</option>
           <option value="de">DE</option>
@@ -254,7 +254,7 @@ function FiltersBar({
           onChange={(e) =>
             onChange({ ...filters, processing_status: e.target.value || undefined })
           }
-          className={SELECT}
+          className={`${SELECT} col-span-3 w-full`}
         >
           <option value="">All processing statuses</option>
           {[
@@ -545,7 +545,7 @@ export default function JobsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
         <FiltersBar filters={filters} onChange={setFilters} />
       </div>
