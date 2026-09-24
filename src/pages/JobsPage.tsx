@@ -342,7 +342,6 @@ function SortableHeader({
 function JobRowActions({ job }: { job: JobListItem }) {
   const queryClient = useQueryClient()
   const [modalOpen, setModalOpen] = useState(false)
-  const [reviewing, setReviewing] = useState(false)
 
   const retryMutation = useMutation({
     mutationFn: () => retryJob(job.id),
@@ -379,19 +378,6 @@ function JobRowActions({ job }: { job: JobListItem }) {
             onSubmit={(text) => manualTextMutation.mutate(text)}
             onClose={() => setModalOpen(false)}
           />
-        )}
-      </>
-    )
-  }
-
-  if (job.processing_status === "needs_review") {
-    return (
-      <>
-        <button type="button" onClick={() => setReviewing(true)} className={`text-xs ${BTN_TEXT}`}>
-          Review
-        </button>
-        {reviewing && (
-          <ReviewJobsModal jobIds={[job.id]} onClose={() => setReviewing(false)} />
         )}
       </>
     )
@@ -559,8 +545,10 @@ export default function JobsPage() {
 
   return (
     <div className="space-y-4">
-      <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
-      <FiltersBar filters={filters} onChange={setFilters} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        <AddUrlsPanel onAccepted={() => queryClient.invalidateQueries({ queryKey: ["jobs"] })} />
+        <FiltersBar filters={filters} onChange={setFilters} />
+      </div>
 
       <div>
         {query.isLoading && <p className="text-sm text-slate-500">Loading…</p>}

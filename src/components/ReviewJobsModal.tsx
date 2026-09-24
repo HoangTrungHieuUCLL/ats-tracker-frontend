@@ -1,19 +1,10 @@
-import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query"
-import { analyzeJob, getJob, NON_FINAL_STATUSES } from "../api/jobs"
+import { useQueries } from "@tanstack/react-query"
+import { getJob, NON_FINAL_STATUSES } from "../api/jobs"
 import type { JobDetail } from "../api/types"
 import ProcessingStatusChip from "./ProcessingStatusChip"
-import { BTN_ICON, BTN_PRIMARY, BTN_SECONDARY } from "../styles/ui"
+import { BTN_ICON, BTN_SECONDARY } from "../styles/ui"
 
 function ReviewRow({ job }: { job: JobDetail }) {
-  const queryClient = useQueryClient()
-  const analyzeMutation = useMutation({
-    mutationFn: () => analyzeJob(job.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["job", job.id] })
-      queryClient.invalidateQueries({ queryKey: ["jobs"] })
-    },
-  })
-
   return (
     <div className="border border-brand rounded-sm p-3">
       <div className="flex items-start justify-between gap-2">
@@ -32,30 +23,6 @@ function ReviewRow({ job }: { job: JobDetail }) {
         </div>
         <ProcessingStatusChip status={job.processing_status} />
       </div>
-
-      {job.processing_status === "needs_review" && (
-        <div className="mt-3">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">
-            Extracted content that will be sent to the LLM
-          </p>
-          <pre className="max-h-48 overflow-auto bg-slate-50 border border-slate-200 rounded-sm p-2 text-xs whitespace-pre-wrap font-mono">
-            {job.raw_text}
-          </pre>
-          <div className="mt-2 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => analyzeMutation.mutate()}
-              disabled={analyzeMutation.isPending}
-              className={BTN_PRIMARY}
-            >
-              {analyzeMutation.isPending ? "Sending…" : "Analyse"}
-            </button>
-            {analyzeMutation.isError && (
-              <span className="text-xs text-red-600">Could not start analysis.</span>
-            )}
-          </div>
-        </div>
-      )}
 
       {job.processing_status === "needs_manual_text" && (
         <p className="mt-2 text-xs text-amber-700">
